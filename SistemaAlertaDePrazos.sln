@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiAlertaDePrazos", "ApiAlertaDePrazos\ApiAlertaDePrazos.csproj", "{A0C7EE5B-FC09-4BDD-BCBD-8465E04C59BA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiAlertaDePrazos", "ApiAlertaDePrazos\ApiAlertaDePrazos.csproj", "{A0C7EE5B-FC09-4BDD-BCBD-8465E04C59BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiUFU", "ApiUFU\ApiUFU.csproj", "{66549BCC-6F84-4844-8D55-3F9A53116F17}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ApiUFU", "ApiUFU\ApiUFU.csproj", "{66549BCC-6F84-4844-8D55-3F9A53116F17}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoboAlertaDePrazos", "RoboAlertaDePrazos\RoboAlertaDePrazos.csproj", "{60BC0982-756F-407C-962C-EF4E694A5AB0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppAlertaDePrazos", "AppAlertaDePrazos\AppAlertaDePrazos.csproj", "{30B4AE23-8A76-4C9A-9426-4E44DD2BA1B7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{66549BCC-6F84-4844-8D55-3F9A53116F17}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66549BCC-6F84-4844-8D55-3F9A53116F17}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66549BCC-6F84-4844-8D55-3F9A53116F17}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60BC0982-756F-407C-962C-EF4E694A5AB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60BC0982-756F-407C-962C-EF4E694A5AB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60BC0982-756F-407C-962C-EF4E694A5AB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60BC0982-756F-407C-962C-EF4E694A5AB0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30B4AE23-8A76-4C9A-9426-4E44DD2BA1B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30B4AE23-8A76-4C9A-9426-4E44DD2BA1B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30B4AE23-8A76-4C9A-9426-4E44DD2BA1B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30B4AE23-8A76-4C9A-9426-4E44DD2BA1B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
