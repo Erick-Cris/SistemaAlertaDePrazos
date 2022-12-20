@@ -8,6 +8,19 @@ namespace ApiUFU.Controllers
     [Route("[controller]")]
     public class DisciplinaController : ControllerBase
     {
+        [HttpGet]
+        [Route("Get")]
+        public IEnumerable<Disciplina> Get()
+        {
+            List<Disciplina> disciplinas = null;
+            using (var db = new UFUContext())
+            {
+                disciplinas = db.Disciplinas.ToList();
+            }
+
+            return disciplinas;
+        }
+
         [HttpPost]
         [Route("SeedDisciplinas")]
         public IActionResult SeedDisciplinas()

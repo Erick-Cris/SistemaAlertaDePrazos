@@ -28,7 +28,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Primeiro
+                    Periodo = Utils.Periodo.Primeiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -37,7 +38,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Primeiro
+                    Periodo = Utils.Periodo.Primeiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -46,7 +48,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Primeiro
+                    Periodo = Utils.Periodo.Primeiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -55,7 +58,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Primeiro
+                    Periodo = Utils.Periodo.Primeiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -64,7 +68,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Primeiro
+                    Periodo = Utils.Periodo.Primeiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -73,7 +78,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI002",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Segundo
+                    Periodo = Utils.Periodo.Segundo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -82,7 +88,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Segundo
+                    Periodo = Utils.Periodo.Segundo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -91,7 +98,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Segundo
+                    Periodo = Utils.Periodo.Segundo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -100,7 +108,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Segundo
+                    Periodo = Utils.Periodo.Segundo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -109,7 +118,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI005",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Segundo
+                    Periodo = Utils.Periodo.Segundo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -118,7 +128,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI006",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Terceiro
+                    Periodo = Utils.Periodo.Terceiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -127,7 +138,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI007",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Terceiro
+                    Periodo = Utils.Periodo.Terceiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -136,7 +148,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI008",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Terceiro
+                    Periodo = Utils.Periodo.Terceiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -145,7 +158,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Terceiro
+                    Periodo = Utils.Periodo.Terceiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -154,7 +168,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Terceiro
+                    Periodo = Utils.Periodo.Terceiro,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -163,7 +178,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quarto
+                    Periodo = Utils.Periodo.Quarto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -172,7 +188,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quarto
+                    Periodo = Utils.Periodo.Quarto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -181,7 +198,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI013",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quarto
+                    Periodo = Utils.Periodo.Quarto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -190,7 +208,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quarto
+                    Periodo = Utils.Periodo.Quarto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -199,7 +218,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI015",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quarto
+                    Periodo = Utils.Periodo.Quarto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -208,7 +228,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI016",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quinto
+                    Periodo = Utils.Periodo.Quinto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -217,7 +238,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quinto
+                    Periodo = Utils.Periodo.Quinto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -226,7 +248,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI018",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quinto
+                    Periodo = Utils.Periodo.Quinto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -235,7 +258,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quinto
+                    Periodo = Utils.Periodo.Quinto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -244,7 +268,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Quinto
+                    Periodo = Utils.Periodo.Quinto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -253,7 +278,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Sexto
+                    Periodo = Utils.Periodo.Sexto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -262,7 +288,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Sexto
+                    Periodo = Utils.Periodo.Sexto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -271,7 +298,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI023",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Sexto
+                    Periodo = Utils.Periodo.Sexto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -280,7 +308,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Sexto
+                    Periodo = Utils.Periodo.Sexto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -289,7 +318,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI025",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Sexto
+                    Periodo = Utils.Periodo.Sexto,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -298,7 +328,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Setimo
+                    Periodo = Utils.Periodo.Setimo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -307,7 +338,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Setimo
+                    Periodo = Utils.Periodo.Setimo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -316,7 +348,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Setimo
+                    Periodo = Utils.Periodo.Setimo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -325,7 +358,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI030",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Setimo
+                    Periodo = Utils.Periodo.Setimo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -334,7 +368,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Setimo
+                    Periodo = Utils.Periodo.Setimo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -343,7 +378,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Oitavo
+                    Periodo = Utils.Periodo.Oitavo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -352,7 +388,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Oitavo
+                    Periodo = Utils.Periodo.Oitavo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -361,7 +398,8 @@ namespace ApiUFU.Data
                     IdDisciplina = null,
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Oitavo
+                    Periodo = Utils.Periodo.Oitavo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -370,7 +408,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI034",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Oitavo
+                    Periodo = Utils.Periodo.Oitavo,
+                    CargaHoraria = 60
                 },
                 new Disciplina
                 {
@@ -379,7 +418,8 @@ namespace ApiUFU.Data
                     IdDisciplina = "GSI039",
                     Obrigatoria = true,
                     CursoId = 1,
-                    Periodo = Utils.Periodo.Oitavo
+                    Periodo = Utils.Periodo.Oitavo,
+                    CargaHoraria = 60
                 }
             );
         }

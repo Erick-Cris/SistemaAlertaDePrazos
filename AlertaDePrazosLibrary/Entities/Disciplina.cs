@@ -1,6 +1,11 @@
-﻿using ApiUFU.Utils;
+﻿using AlertaDePrazosLibrary.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ApiUFU.Models
+namespace AlertaDePrazosLibrary.Entities
 {
     public class Disciplina
     {

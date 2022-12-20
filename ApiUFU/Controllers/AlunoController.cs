@@ -54,6 +54,7 @@ namespace ApiUFU.Controllers
                     //Anos
                     for (int k = 2014; k < DateTime.Now.Year; k++)
                     {
+                        //Semestre obj_semestre = new Semestre() { ano = k, DataInicio =};
                         List<Curso> cursos = db.Cursos.ToList();
                         foreach (KeyValuePair<int, List<Disciplina>> curso in dict)
                         {
