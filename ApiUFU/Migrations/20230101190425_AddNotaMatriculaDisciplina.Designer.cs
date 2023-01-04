@@ -4,6 +4,7 @@ using ApiUFU.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiUFU.Migrations
 {
     [DbContext(typeof(UFUContext))]
-    partial class UFUContextModelSnapshot : ModelSnapshot
+    [Migration("20230101190425_AddNotaMatriculaDisciplina")]
+    partial class AddNotaMatriculaDisciplina
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -502,19 +505,11 @@ namespace ApiUFU.Migrations
 
             modelBuilder.Entity("ApiUFU.Models.MatriculaDisciplina", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
                     b.Property<string>("AlunoId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("DisciplinaId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Nota")
                         .HasColumnType("int");
@@ -522,7 +517,7 @@ namespace ApiUFU.Migrations
                     b.Property<int>("SemestreId")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("AlunoId", "DisciplinaId");
 
                     b.ToTable("MatriculaDisciplinas");
                 });
