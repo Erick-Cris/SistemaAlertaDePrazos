@@ -2,15 +2,8 @@
 
 namespace ApiUFU.Models
 {
-    public class Disciplina
+    public class Disciplina : AlertaDePrazosLibrary.Entities.Disciplina
     {
-        public string Id { get; set; }
-        public string? IdDisciplina { get; set; }
-        public int CursoId { get; set; }
-        public Periodo Periodo { get; set; }
-        public string Titulo { get; set; }
-        public bool Obrigatoria { get; set; }
-        public int CargaHoraria { get; set; }
 
     }
 }

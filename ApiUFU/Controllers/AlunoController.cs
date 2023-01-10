@@ -1,5 +1,6 @@
-﻿using ApiUFU.Data;
-using ApiUFU.Models;
+﻿using AlertaDePrazosLibrary.Entities;
+using AlertaDePrazosLibrary.Enums;
+using ApiUFU.Data;
 using ApiUFU.Utils;
 using Microsoft.AspNetCore.Mvc;
 using RandomNameGeneratorLibrary;
@@ -130,11 +131,13 @@ namespace ApiUFU.Controllers
                 Dictionary<int, List<Semestre>> anoSemestre = new Dictionary<int, List<Semestre>>();
                 List<MatriculaDisciplina> matriculaDisciplinas = new List<MatriculaDisciplina>();
                 List<Aluno> alunos = new List<Aluno>();
+                List<Estagio> estagios = new List<Estagio>();
 
                 using (var db = new UFUContext())
                 {
                     List<Semestre> semestres = new List<Semestre>();
                     List<Curso> cursos = db.Cursos.ToList();
+                    estagios = db.Estagios.ToList();
 
                     foreach(Curso curso in cursos)
                     {
@@ -191,47 +194,65 @@ namespace ApiUFU.Controllers
 
                             foreach (Aluno aluno in alunosMatriculadosNoCurso)
                             {
+
+                                //Inicio Estágio Não Obrigatório
+                                bool estagioEmAndamento = false;
+                                if (semestre.Id == semestres[semestres.Count - 1].Id || semestre.Id == semestres[semestres.Count - 2].Id)
+                                    estagioEmAndamento = true;
+                                Estagio estagio = Functions.AlunoFazEstagio(aluno, matriculaDisciplinas, dict.Where(x => x.Key == curso.Id).FirstOrDefault().Value, estagios, semestre, curso, estagioEmAndamento);
+                                if (estagio != null)
+                                    estagios.Add(estagio);
+                                //Fim Estágio Não Obrigatório
+
                                 int quantidadeSemestresAluno = semestres.Where(x => x.DataInicio >= aluno.DataIngresso && x.DataInicio <= semestre.DataInicio).ToList().Count;
-                                Console.WriteLine(aluno.Nome + quantidadeSemestresAluno);
-
-                                if (quantidadeSemestresAluno <= 8)
+                                
+                                //Trancamento Geral
+                                if(new Random().Next(1, 11) < 9)
                                 {
-                                    //Add 5 disciplinas do período atual do aluno
-                                    List<Disciplina> disciplinasDoPeriodo = dict.Where(x => x.Key == aluno.CursoId).FirstOrDefault().Value.Where(x => ((int)x.Periodo) == quantidadeSemestresAluno).ToList();
-                                    disciplinasDoPeriodo = Functions.ValidaDisciplinasV2(aluno, matriculaDisciplinas, disciplinasDoPeriodo);
-
-                                    int qtdDiscipilinas = new Random().Next(0, 6);
-                                    List<Disciplina> disciplinasAprovadas = disciplinasDoPeriodo.OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList();
-                                    foreach(Disciplina disciplina in disciplinasAprovadas)
+                                    if (quantidadeSemestresAluno <= 8)
                                     {
-                                        matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(60, 101)));
+                                        //Add 5 disciplinas do período atual do aluno
+                                        List<Disciplina> disciplinasDoPeriodo = dict.Where(x => x.Key == aluno.CursoId).FirstOrDefault().Value.Where(x => ((int)x.Periodo) == quantidadeSemestresAluno).ToList();
+                                        disciplinasDoPeriodo = Functions.ValidaDisciplinasV2(aluno, matriculaDisciplinas, disciplinasDoPeriodo);
+
+                                        int qtdDiscipilinas = new Random().Next(0, 6);
+                                        List<Disciplina> disciplinasAprovadas = disciplinasDoPeriodo.OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList();
+                                        foreach (Disciplina disciplina in disciplinasAprovadas)
+                                        {
+                                            matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(60, 101)));
+                                        }
+                                        List<Disciplina> disciplinasReprovadas = disciplinasDoPeriodo.Except(disciplinasAprovadas).ToList();
+                                        foreach (Disciplina disciplina in disciplinasReprovadas)
+                                        {
+                                            //Trancamento Parcial
+                                            if(new Random().Next(0, 100) > 65)
+                                                matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(0, 60)));
+                                            else
+                                                matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, 0, true));
+                                        }
                                     }
-                                    List<Disciplina> disciplinasReprovadas = disciplinasDoPeriodo.Except(disciplinasAprovadas).ToList();
-                                    foreach (Disciplina disciplina in disciplinasReprovadas)
+                                    else
                                     {
-                                        matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(0, 60)));
-                                    }
-                                }
-                                else
-                                {
-                                    
-                                    List<MatriculaDisciplina> matriculaDisciplinaAlunoAprovadas = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).ToList();
-                                    List<Disciplina> disciplinasAlunoAprovadas = dict.Where(x => x.Key == curso.Id).FirstOrDefault().Value.Where(x => matriculaDisciplinaAlunoAprovadas.Any(y => y.DisciplinaId == x.Id)).ToList();
-                                    List<Disciplina> disciplinaPendentes = dict.Where(x => x.Key == curso.Id).FirstOrDefault().Value.Except(disciplinasAlunoAprovadas).ToList();
+
+                                        List<MatriculaDisciplina> matriculaDisciplinaAlunoAprovadas = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).ToList();
+                                        List<Disciplina> disciplinasAlunoAprovadas = dict.Where(x => x.Key == curso.Id).FirstOrDefault().Value.Where(x => matriculaDisciplinaAlunoAprovadas.Any(y => y.DisciplinaId == x.Id)).ToList();
+                                        List<Disciplina> disciplinaPendentes = dict.Where(x => x.Key == curso.Id).FirstOrDefault().Value.Except(disciplinasAlunoAprovadas).ToList();
 
 
-                                    //Add até 5 disciplinas aleatórias
-                                    int qtdDiscipilinas = new Random().Next(0, 6);
-                                    List<Disciplina> disciplinasAprovadas = Functions.ValidaDisciplinasV2(aluno, matriculaDisciplinas, disciplinaPendentes).OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList();
-                                    foreach (Disciplina disciplina in disciplinasAprovadas)
-                                    {
-                                        matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(0, 60)));
+                                        //Add até 5 disciplinas aleatórias
+                                        int qtdDiscipilinas = new Random().Next(0, 6);
+                                        List<Disciplina> disciplinasAprovadas = Functions.ValidaDisciplinasV2(aluno, matriculaDisciplinas, disciplinaPendentes).OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList();
+                                        foreach (Disciplina disciplina in disciplinasAprovadas)
+                                        {
+                                            matriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, semestre.Id, new Random().Next(0, 60)));
+                                        }
                                     }
                                 }
                             }
                         }
                     }
 
+                    db.Estagios.AddRange(estagios);
                     db.MatriculaDisciplinas.AddRange(matriculaDisciplinas);
                     db.SaveChanges();
                 }

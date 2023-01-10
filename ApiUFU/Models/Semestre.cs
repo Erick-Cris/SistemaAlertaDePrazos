@@ -1,12 +1,7 @@
 ﻿namespace ApiUFU.Models
 {
-    public class Semestre
+    public class Semestre : AlertaDePrazosLibrary.Entities.Semestre
     {
-        public int Id { get; set; }
-        public int ordem { get; set; }
-        public int ano { get; set; }
-        public DateTime DataInicio { get; set; }
-        public DateTime DataFim { get; set; }
 
     }
 }

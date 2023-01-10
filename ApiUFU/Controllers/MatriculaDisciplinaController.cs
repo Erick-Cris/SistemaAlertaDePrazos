@@ -1,5 +1,5 @@
-﻿using ApiUFU.Data;
-using ApiUFU.Models;
+﻿using AlertaDePrazosLibrary.Entities;
+using ApiUFU.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers

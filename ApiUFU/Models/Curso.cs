@@ -1,8 +1,6 @@
 ﻿namespace ApiUFU.Models
 {
-    public class Curso
+    public class Curso : AlertaDePrazosLibrary.Entities.Curso
     {
-        public int Id { get; set; }
-        public string Titulo { get; set; }
     }
 }

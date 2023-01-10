@@ -1,5 +1,6 @@
-﻿using ApiUFU.Data;
-using ApiUFU.Models;
+﻿using AlertaDePrazosLibrary.Entities;
+using AlertaDePrazosLibrary.Enums;
+using ApiUFU.Data;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers
@@ -36,7 +37,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Primeiro
+                        Periodo = Periodo.Primeiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -45,7 +46,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Primeiro
+                        Periodo = Periodo.Primeiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -54,7 +55,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Primeiro
+                        Periodo = Periodo.Primeiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -63,7 +64,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Primeiro
+                        Periodo = Periodo.Primeiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -72,7 +73,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Primeiro
+                        Periodo = Periodo.Primeiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -81,7 +82,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI002",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Segundo
+                        Periodo = Periodo.Segundo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -90,7 +91,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Segundo
+                        Periodo = Periodo.Segundo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -99,7 +100,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Segundo
+                        Periodo = Periodo.Segundo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -108,7 +109,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Segundo
+                        Periodo = Periodo.Segundo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -117,7 +118,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI005",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Segundo
+                        Periodo = Periodo.Segundo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -126,7 +127,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI006",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Terceiro
+                        Periodo = Periodo.Terceiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -135,7 +136,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI007",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Terceiro
+                        Periodo = Periodo.Terceiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -144,7 +145,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI008",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Terceiro
+                        Periodo = Periodo.Terceiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -153,7 +154,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Terceiro
+                        Periodo = Periodo.Terceiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -162,7 +163,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Terceiro
+                        Periodo = Periodo.Terceiro
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -171,7 +172,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quarto
+                        Periodo = Periodo.Quarto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -180,7 +181,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quarto
+                        Periodo = Periodo.Quarto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -189,7 +190,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI013",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quarto
+                        Periodo = Periodo.Quarto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -198,7 +199,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quarto
+                        Periodo = Periodo.Quarto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -207,7 +208,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI015",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quarto
+                        Periodo = Periodo.Quarto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -216,7 +217,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI016",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quinto
+                        Periodo = Periodo.Quinto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -225,7 +226,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quinto
+                        Periodo = Periodo.Quinto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -234,7 +235,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI018",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quinto
+                        Periodo = Periodo.Quinto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -243,7 +244,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quinto
+                        Periodo = Periodo.Quinto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -252,7 +253,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Quinto
+                        Periodo = Periodo.Quinto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -261,7 +262,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Sexto
+                        Periodo = Periodo.Sexto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -270,7 +271,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Sexto
+                        Periodo = Periodo.Sexto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -279,7 +280,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI023",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Sexto
+                        Periodo = Periodo.Sexto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -288,7 +289,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Sexto
+                        Periodo = Periodo.Sexto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -297,7 +298,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI025",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Sexto
+                        Periodo = Periodo.Sexto
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -306,7 +307,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Setimo
+                        Periodo = Periodo.Setimo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -315,7 +316,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Setimo
+                        Periodo = Periodo.Setimo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -324,7 +325,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Setimo
+                        Periodo = Periodo.Setimo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -333,7 +334,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI030",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Setimo
+                        Periodo = Periodo.Setimo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -342,7 +343,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Setimo
+                        Periodo = Periodo.Setimo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -351,7 +352,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Oitavo
+                        Periodo = Periodo.Oitavo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -360,7 +361,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Oitavo
+                        Periodo = Periodo.Oitavo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -369,7 +370,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = null,
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Oitavo
+                        Periodo = Periodo.Oitavo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -378,7 +379,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI034",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Oitavo
+                        Periodo = Periodo.Oitavo
                     });
                     db.Disciplinas.Add(new Disciplina
                     {
@@ -387,7 +388,7 @@ namespace ApiUFU.Controllers
                         IdDisciplina = "GSI039",
                         Obrigatoria = true,
                         CursoId = 1,
-                        Periodo = Utils.Periodo.Oitavo
+                        Periodo = Periodo.Oitavo
                     });
 
                     db.SaveChanges();
