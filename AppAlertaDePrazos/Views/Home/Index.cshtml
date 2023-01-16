@@ -3,6 +3,30 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Regras</h1>
+
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Nome</th>
+                <th scope="col">Descrição</th>
+                <th scope="col">Ativo</th>
+                <th scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var regra in ViewBag.Regras)
+        {
+            <tr>
+                <th scope="row">@regra.Id</th>
+                <td>@regra.Nome</td>
+                <td>@regra.Descricao</td>
+                <td>@regra.IsActive</td>
+                <td>@Html.ActionLink("EDITAR","Edit","Regras","https", "localhost:7241", null,new { regraid = regra.Id },null)</td>
+            </tr>
+        }
+        </tbody>
+    </table>
 </div>

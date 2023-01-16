@@ -159,7 +159,7 @@ static void AlertaTrancamentoParcial(Aluno aluno)
     string body = @"<html>
                       <body style='font-size: 1.8rem'>
                       <p style='font-size: 2rem'>Caro Aluno.</p>
-                      <p>Foi identificado que você está matriculado em menos de 2 componentes curriculares nesse semestre.</p>
+                      <p>Foi identificado que você está matriculado em 2 componentes curriculares nesse semestre.</p>
                       <p>Se atente a norma da instituição que define que um aluno deve se matricuar em no mínimo 2 disciplinas.</p>
                       <p>Logo, sugerimos que procure aumentar o número de componentes curriculares neste semestre por meio do Reajuste de disciplinas no Portal do Aluno.</p>
                       <p>Norma:

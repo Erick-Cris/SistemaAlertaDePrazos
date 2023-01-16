@@ -1,0 +1,38 @@
+﻿<fieldset>
+
+    <div>
+        <label for="Nome">Nome:</label>
+        <input type="text" id="Nome" name="Nome" />
+    </div>
+    <div>
+        <label for="Email">E-mail:</label>
+        <input type="email" id="Email" name="Email" />
+    </div>
+
+    <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
+</fieldset>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+    $("#salvar").click(() => {
+          $.ajax({
+              type: "POST",
+              url: "/Usuario/Criar",
+              data: {
+                        Nome: $("#Nome").val(),
+                        Email: $("#Email").val(),
+                    },
+              async: false,
+              success: () => {
+                  //$("#exampleModal").show();
+                  OpenModal("Sucesso!", "Usuario com sucesso.")
+              },
+              error: (result) => {
+                    OpenModal("Erro!", "Não foi possível criar o usuário.")
+                }
+          });
+    });
+    });
+</script>

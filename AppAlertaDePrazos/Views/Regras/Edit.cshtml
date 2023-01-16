@@ -1,0 +1,57 @@
+﻿@{
+    var regra = ViewBag.Regra;
+}
+<fieldset>
+    <div>
+        <input hidden type="text" id="Id" name="Id" value=@regra.Id />
+    </div>
+    <div>
+        <label for="Nome">Título:</label>
+        <input type="text" id="Nome" name="Nome" value=@regra.Nome />
+    </div>
+    <div>
+        <label for="Descricao">Descrição:</label>
+        <textarea id="Descricao" name="Descricao" rows="4" cols="50"> @regra.Descricao</textarea>
+    </div>
+    <div>
+        <label for="Parametros">Pârametros:</label>
+        <textarea id="Parametros" name="Parametros" rows="4" cols="50"> @regra.Parametros</textarea>
+    </div>
+    <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" id="IsActive" name="IsActive">
+        <label class="form-check-label" for="IsActive">Ativar</label>
+    </div>
+    <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
+</fieldset>
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        
+        
+
+    $("#salvar").click(() => {
+          $.ajax({
+              type: "POST",
+              url: "/Regras/Edit",
+              data: {
+                        Id: $("#Id").val(),
+                        Nome: $("#Nome").val(),
+                        Descricao: $("#Descricao").val(),
+                        Parametros: $("#Parametros").val(),
+                        IsActive: $('#IsActive').is(":checked")
+                    },
+              async: false,
+              success: () => {
+                  //$("#exampleModal").show();
+                  OpenModal("Sucesso!", "Regra atualizada com sucesso.")
+              },
+              error: (result) => {
+                    OpenModal("Erro!", "Não foi possível atualizar a regra.")
+                }
+          });
+    });
+    });
+</script>

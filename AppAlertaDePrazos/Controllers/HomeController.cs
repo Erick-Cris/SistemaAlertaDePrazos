@@ -1,5 +1,7 @@
-﻿using AppAlertaDePrazos.Models;
+﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
+using AppAlertaDePrazos.Models;
 using Microsoft.AspNetCore.Mvc;
+using RestSharp;
 using System.Diagnostics;
 
 namespace AppAlertaDePrazos.Controllers
@@ -15,6 +17,12 @@ namespace AppAlertaDePrazos.Controllers
 
         public IActionResult Index()
         {
+            var client = new RestClient("https://localhost:7049");
+            var request = new RestRequest("Regras/get", Method.Get);
+            List<Regra> regras = client.Execute<List<Regra>>(request).Data;
+
+            ViewBag.Regras = regras;
+
             return View();
         }
 

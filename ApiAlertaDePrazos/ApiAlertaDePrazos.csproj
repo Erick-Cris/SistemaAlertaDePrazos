@@ -25,4 +25,8 @@
     <ProjectReference Include="..\AlertaDePrazosLibrary\AlertaDePrazosLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

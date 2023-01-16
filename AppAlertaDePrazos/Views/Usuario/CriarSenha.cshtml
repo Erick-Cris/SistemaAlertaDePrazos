@@ -1,0 +1,40 @@
+﻿
+@{
+}
+
+<fieldset>
+    <div>
+        <label for="senha1">Senha:</label>
+        <input type="password" id="senha1" name="senha1" />
+    </div>
+    <div>
+        <label for="senha2">Repita a  Nova Senha:</label>
+        <input type="password" id="senha2" name="senha2" />
+    </div>
+
+    <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
+</fieldset>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+
+    $("#salvar").click(() => {
+          $.ajax({
+              type: "POST",
+              url: "/Usuario/CriarSenha",
+              data: {
+                        senha1: $("#senha1").val(),
+                        senha2: $("#senha2").val(),
+                    },
+              async: false,
+              success: () => {
+                  //$("#exampleModal").show();
+                  OpenModal("Sucesso!", "Senha criada com sucesso.")
+              },
+              error: (result) => {
+                    OpenModal("Erro!", "Não foi possível criar uma senha.")
+                }
+          });
+    });
+    });
+</script>

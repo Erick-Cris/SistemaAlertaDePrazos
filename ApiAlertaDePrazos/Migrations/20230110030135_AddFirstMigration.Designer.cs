@@ -4,6 +4,7 @@ using ApiAlertaDePrazos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiAlertaDePrazos.Migrations
 {
     [DbContext(typeof(SistemaDeAlertaDePrazosContext))]
-    partial class SistemaDeAlertaDePrazosContextModelSnapshot : ModelSnapshot
+    [Migration("20230110030135_AddFirstMigration")]
+    partial class AddFirstMigration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,7 +25,7 @@ namespace ApiAlertaDePrazos.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("AlertaDePrazosLibrary.Entities.AlertaDePrazos.Alerta", b =>
+            modelBuilder.Entity("ApiAlertaDePrazos.Models.Alerta", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -45,7 +48,7 @@ namespace ApiAlertaDePrazos.Migrations
                     b.ToTable("Alertas");
                 });
 
-            modelBuilder.Entity("AlertaDePrazosLibrary.Entities.AlertaDePrazos.Regra", b =>
+            modelBuilder.Entity("ApiAlertaDePrazos.Models.Regra", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -144,44 +147,6 @@ namespace ApiAlertaDePrazos.Migrations
                             IsActive = true,
                             Nome = "Estagio Não Obrigatório Ativo",
                             Parametros = ""
-                        });
-                });
-
-            modelBuilder.Entity("AlertaDePrazosLibrary.Entities.AlertaDePrazos.Usuario", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "erickcristianup@gmail.com",
-                            IsActive = true,
-                            Nome = "Administrador",
-                            PasswordHash = "123456"
                         });
                 });
 #pragma warning restore 612, 618
