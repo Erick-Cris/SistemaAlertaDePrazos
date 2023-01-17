@@ -1,5 +1,6 @@
 ﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using AlertaDePrazosLibrary.Utils;
+using ApiAlertaDePrazos.Configuracoes;
 using ApiAlertaDePrazos.Data;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
@@ -35,22 +36,24 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
 
-        [HttpPost]
+        [HttpGet]
+        [Route("anonymous")]
         [Route("AutenticarUsuario")]
-        public IActionResult AutenticarUsuario(string email, string passwordHash)
+        public IActionResult AutenticarUsuario(string usuario, string senha)
         {
             try
             {
-                Usuario usuario = null;
+                Usuario user = null;
                 using (var db = new SistemaDeAlertaDePrazosContext())
                 {
-                    usuario = db.Usuarios.Where(x => x.Email == email && x.PasswordHash == passwordHash).ToList().FirstOrDefault();
+                    user = db.Usuarios.Where(x => x.Email == usuario && x.PasswordHash == senha).ToList().FirstOrDefault();
                 }
 
-                if(usuario != null)
+                if(user != null)
                 {
-                    usuario.PasswordHash = String.Empty;
-                    return Ok(usuario);
+                    var token = TokenService.GenerateToken(user);
+                    user.PasswordHash = String.Empty;
+                    return Ok(new { user = user, token = token});
                 }
                 else
                     return StatusCode(StatusCodes.Status401Unauthorized, "Usuário ou senha inválidos.");
