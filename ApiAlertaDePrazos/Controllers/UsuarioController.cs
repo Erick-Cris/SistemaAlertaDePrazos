@@ -36,21 +36,21 @@ namespace ApiAlertaDePrazos.Controllers
 
 
         [HttpPost]
-        [Route("AutenticarUsuario")]
-        public IActionResult AutenticarUsuario(string email, string passwordHash)
+        [Route("Autenticar")]
+        public IActionResult Autenticar(Usuario usuario)
         {
             try
             {
-                Usuario usuario = null;
+                Usuario user = null;
                 using (var db = new SistemaDeAlertaDePrazosContext())
                 {
-                    usuario = db.Usuarios.Where(x => x.Email == email && x.PasswordHash == passwordHash).ToList().FirstOrDefault();
+                    user = db.Usuarios.Where(x => x.Email == usuario.Email && x.PasswordHash == usuario.PasswordHash).ToList().FirstOrDefault();
                 }
 
-                if(usuario != null)
+                if(user != null)
                 {
-                    usuario.PasswordHash = String.Empty;
-                    return Ok(usuario);
+                    user.PasswordHash = String.Empty;
+                    return Ok(user);
                 }
                 else
                     return StatusCode(StatusCodes.Status401Unauthorized, "Usuário ou senha inválidos.");
@@ -67,32 +67,20 @@ namespace ApiAlertaDePrazos.Controllers
         {
             try
             {
-                // Generate a 128-bit salt using a sequence of
-                // cryptographically strong random bytes.
-                byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
-                Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
-
-                // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: usuario.PasswordHash!,
-                    salt: salt,
-                    prf: KeyDerivationPrf.HMACSHA256,
-                    iterationCount: 100000,
-                    numBytesRequested: 256 / 8));
-
+                
                 using (var db = new SistemaDeAlertaDePrazosContext())
                 {
                     if (db.Usuarios.Where(x => x.Email == usuario.Email).ToList().Count > 0)
                         return StatusCode(StatusCodes.Status422UnprocessableEntity, "Este e-mail já está sendo usado.");
 
-                    usuario.PasswordHash = hashed;
+                    usuario.PasswordHash = "";
                     usuario.IsActive = false;
                     db.Usuarios.Add(usuario);
                     db.SaveChanges();
                 }
 
                 //Token
-                byte[] textoAsBytes = Encoding.ASCII.GetBytes($"{usuario.Id}:{usuario.Email}");
+                byte[] textoAsBytes = Encoding.ASCII.GetBytes($"{usuario.Id}:{usuario.Nome}:{usuario.Email}");
                 string token = System.Convert.ToBase64String(textoAsBytes);
 
                 string linkConfirmacao = $"https://localhost:7241/Usuario/Ativar/{token}";
@@ -121,6 +109,37 @@ namespace ApiAlertaDePrazos.Controllers
             }
         }
 
+        [HttpPost]
+        [Route("Editar")]
+        public IActionResult Editar(Usuario usuario)
+        {
+            try
+            {
+
+                using (var db = new SistemaDeAlertaDePrazosContext())
+                {
+                    Usuario user = db.Usuarios.Where(x => x.Id == usuario.Id).ToList().FirstOrDefault();
+
+                    if (user == null)
+                        throw new Exception("Usuário não encontrado.");
+
+                    if(user.IsActive == true)
+                        throw new Exception("Usuário já possui senha.");
+
+                    user.PasswordHash = usuario.PasswordHash;
+                    user.IsActive = usuario.IsActive;
+                    db.Usuarios.Update(user);
+                    db.SaveChanges();
+                }
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
         [HttpGet]
         [Route("Ativar")]
         public IActionResult Ativar(string token)
@@ -131,19 +150,25 @@ namespace ApiAlertaDePrazos.Controllers
                 string credenciais = System.Text.ASCIIEncoding.ASCII.GetString(dadosAsBytes);
                 string userId = string.Empty;
                 string userEmail = string.Empty;
-                if (credenciais.Split(':').Length == 2)
+                string userNome = string.Empty;
+                if (credenciais.Split(':').Length == 3)
                 {
                     userId = credenciais.Split(':')[0];
-                    userEmail = credenciais.Split(':')[1];
+                    userNome = credenciais.Split(':')[1];
+                    userEmail = credenciais.Split(':')[2];
                 }
-                Usuario usuario = null;
+                Usuario usuario = new Usuario() { Id = Convert.ToInt32(userId), Nome = userNome, Email = userEmail};
+
+                usuario.PasswordHash = "password";
+                usuario.IsActive = true;
+
                 using (var db = new SistemaDeAlertaDePrazosContext())
                 {
-                    usuario = db.Usuarios.Where(x => x.Id == Convert.ToInt32(userId)).ToList().FirstOrDefault();
+                    usuario = db.Usuarios.Where(x => x.Id == Convert.ToInt32(userId) && x.Email == usuario.Email && x.Nome.ToLower() == usuario.Nome.ToLower()).ToList().FirstOrDefault();
                 }
 
                 if (usuario != null)
-                    return Ok();
+                    return Ok(usuario);
                 else
                     throw new Exception("Token Inválido");
             }

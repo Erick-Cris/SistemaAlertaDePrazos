@@ -3,9 +3,9 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Regras</h1>
+    <h1 class="display-4" style="padding-bottom: 5%">Regras</h1>
 
-    
+
     <table class="table">
         <thead>
             <tr>
@@ -18,15 +18,25 @@
         </thead>
         <tbody>
             @foreach (var regra in ViewBag.Regras)
-        {
-            <tr>
-                <th scope="row">@regra.Id</th>
-                <td>@regra.Nome</td>
-                <td>@regra.Descricao</td>
-                <td>@regra.IsActive</td>
-                <td>@Html.ActionLink("EDITAR","Edit","Regras","https", "localhost:7241", null,new { regraid = regra.Id },null)</td>
-            </tr>
-        }
+            {
+                <tr>
+                    <th scope="row">@regra.Id</th>
+                    <td>@regra.Nome</td>
+                    <td>@regra.Descricao</td>
+                    <td>
+                        @if (regra.IsActive)
+                        {
+                            <i class="fa-solid fa-circle-check" style="color: green"  title="Ativo"></i>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-circle-xmark" style="color: red"  title="Inativo"></i>
+                        }
+                    </td>
+                    <td><a href="/Regras/Edit/@regra.Id"  title="Editar"><i class="fa-solid fa-pen"></i></a></td>
+                    @*<td>@Html.ActionLink("EDITAR","Edit","Regras","https", "localhost:7241", null,new { regraid = regra.Id }, null)</td>*@
+                </tr>
+            }
         </tbody>
     </table>
 </div>

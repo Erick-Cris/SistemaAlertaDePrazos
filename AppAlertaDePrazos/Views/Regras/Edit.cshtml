@@ -2,26 +2,32 @@
     var regra = ViewBag.Regra;
 }
 <fieldset>
-    <div>
+    <h1>Editar Regra </h1>
+    <br />
+    <div class="container">
         <input hidden type="text" id="Id" name="Id" value=@regra.Id />
+        <label for="Nome" class="form-label">Título:</label>
+        <input type="text" id="Nome" name="Nome" class="form-control" value=@regra.Nome />
+        <br />
+
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="Descricao" name="Descricao" style="height: 100px">@regra.Descricao</textarea>
+            <label for="Descricao">Descricao</label>
+        </div>
+        <br />
+        <div class="form-floating">
+            <textarea class="form-control" placeholder="Leave a comment here" id="Parametros" name="Descricao" style="height: 100px">@regra.Parametros</textarea>
+            <label for="Parametros">Parametros</label>
+        </div>
+        <br />
+        <div class="form-check form-switch">
+            @Html.CheckBox("", regra.IsActive, new { @class="form-check-input", @type="checkbox" ,@id="IsActive", @name="IsActive" })
+            <label class="form-check-label" for="IsActive">Ativar</label>
+        </div>
+        <br />
+        <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
     </div>
-    <div>
-        <label for="Nome">Título:</label>
-        <input type="text" id="Nome" name="Nome" value=@regra.Nome />
-    </div>
-    <div>
-        <label for="Descricao">Descrição:</label>
-        <textarea id="Descricao" name="Descricao" rows="4" cols="50"> @regra.Descricao</textarea>
-    </div>
-    <div>
-        <label for="Parametros">Pârametros:</label>
-        <textarea id="Parametros" name="Parametros" rows="4" cols="50"> @regra.Parametros</textarea>
-    </div>
-    <div class="form-check form-switch">
-        <input class="form-check-input" type="checkbox" id="IsActive" name="IsActive">
-        <label class="form-check-label" for="IsActive">Ativar</label>
-    </div>
-    <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
+
 </fieldset>
 
 
@@ -29,8 +35,8 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-        
-        
+
+
 
     $("#salvar").click(() => {
           $.ajax({

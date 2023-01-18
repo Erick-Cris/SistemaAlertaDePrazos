@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using RestSharp;
+using AlertaDePrazosLibrary.Utils;
 using System.Security.Cryptography;
 
 namespace AppAlertaDePrazos.Controllers
@@ -16,21 +20,22 @@ namespace AppAlertaDePrazos.Controllers
         {
             try
             {
-                // Generate a 128-bit salt using a sequence of
-                // cryptographically strong random bytes.
-                byte[] salt = RandomNumberGenerator.GetBytes(128 / 8); // divide by 8 to convert bits to bytes
-                Console.WriteLine($"Salt: {Convert.ToBase64String(salt)}");
+                string hash = HashHandler.HashPassword(senha);
 
-                // derive a 256-bit subkey (use HMACSHA256 with 100,000 iterations)
-                string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                    password: senha!,
-                    salt: salt,
-                    prf: KeyDerivationPrf.HMACSHA256,
-                    iterationCount: 100000,
-                    numBytesRequested: 256 / 8));
+                Usuario user = new Usuario() { Id = 0, Nome = "", Email = email, IsActive = false, PasswordHash = "" };
+                user.PasswordHash = hash;
 
+                var url = $"https://localhost:7049/Usuario/Autenticar";
+                var client = new RestClient(url);
+                var request = new RestRequest(url, Method.Post);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", JsonConvert.SerializeObject(user), ParameterType.RequestBody);
+                var response = client.Execute(request);
 
-                return Ok();
+                if (response.IsSuccessStatusCode)
+                    return Ok();
+                else
+                    throw new Exception("Usuário ou senha inválidos.");
             }catch (Exception e)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, e.Message);

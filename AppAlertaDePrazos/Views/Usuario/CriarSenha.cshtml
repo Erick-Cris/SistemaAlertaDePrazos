@@ -1,40 +1,88 @@
-﻿
-@{
+﻿@{
+    var usuario = ViewBag.Usuario;
 }
 
 <fieldset>
-    <div>
-        <label for="senha1">Senha:</label>
-        <input type="password" id="senha1" name="senha1" />
-    </div>
-    <div>
-        <label for="senha2">Repita a  Nova Senha:</label>
-        <input type="password" id="senha2" name="senha2" />
-    </div>
+    <h1>Criar Senha</h1>
+    <hr />
+    <br />
+    <br />
 
-    <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
+    <input hidden type="text" id="Id" name="Id" value=@usuario.Id />
+    <input hidden type="text" id="Nome" name="Id" value=@usuario.Nome />
+    <input hidden type="text" id="Email" name="Id" value=@usuario.Email />
+
+    <div class="container">
+        <div class="row justify-content-between">
+            <div class="col-sm-4">
+                <label for="senha1" class="form-label">Senha:</label>
+                <input type="password" id="senha1" name="senha1" class="form-control" />
+            </div>
+        </div>
+        <br />
+        <div class="row justify-content-between">
+            <div class="col-sm-4">
+                <label for="senha2">Repita a  Nova Senha:</label>
+                <input type="password" id="senha2" name="senha2" class="form-control" />
+            </div>
+        </div>
+
+        <br />
+        <div class="row">
+            <div class="col-sm-4">
+                <button id="salvar" type="button" class="btn btn-primary" style="width: 100%">Salvar</button>
+            </div>
+            
+        </div>
+        
+    </div>
 </fieldset>
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
 
+        $("#lista-navbar").empty()
+        $("#lista-navbar").html(`<li class="nav-item"><a class="nav-link text-dark" href="/">Login</a></li>`)
+
     $("#salvar").click(() => {
-          $.ajax({
-              type: "POST",
-              url: "/Usuario/CriarSenha",
-              data: {
-                        senha1: $("#senha1").val(),
-                        senha2: $("#senha2").val(),
+
+         var senha11 = $("#senha1").val();
+         var senha22 = $("#senha2").val();
+         var id = $("#Id").val();
+         var nome = $("#Nome").val();
+         var email = $("#Email").val();
+
+        if(
+            senha11 === senha22 &&
+            senha11.replaceAll(' ', '').length > 5
+            )
+            {
+                $.ajax({
+                    type: "POST",
+                    url: "/Usuario/CriarSenha",
+                    data: {
+                            Id: id,
+                            Nome: nome,
+                            Email: email,
+                            PasswordHash: senha11,
+                            IsActive: true
+                        },
+                    async: false,
+                    success: () => {
+                        OpenModal("Sucesso!", "Senha criada com sucesso.")
                     },
-              async: false,
-              success: () => {
-                  //$("#exampleModal").show();
-                  OpenModal("Sucesso!", "Senha criada com sucesso.")
-              },
-              error: (result) => {
-                    OpenModal("Erro!", "Não foi possível criar uma senha.")
-                }
-          });
+                    error: (result) => {
+                        OpenModal("Erro!", "Não foi possível criar uma senha.")
+                    }
+                });
+            }
+            else
+            {
+                if(senha11 !== senha22)
+                    OpenModal("Atenção!", "As senhas não são iguais.")
+                else
+                    OpenModal("Atenção!", "Senha deve ter pelo menos 6 caracteres.")
+            }
     });
     });
 </script>

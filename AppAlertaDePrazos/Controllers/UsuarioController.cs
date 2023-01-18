@@ -1,7 +1,10 @@
 ﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
+using AlertaDePrazosLibrary.Utils;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
+using System.Security.Cryptography;
 
 namespace AppAlertaDePrazos.Controllers
 {
@@ -18,13 +21,16 @@ namespace AppAlertaDePrazos.Controllers
                 var request = new RestRequest();
                 var response = client.Get(request);
                 if (response.IsSuccessStatusCode)
-                    return View(true);
+                {
+                    ViewBag.Usuario = JsonConvert.DeserializeObject<Usuario>(response.Content);
+                    return View("CriarSenha");
+                }
                 else
-                    return View(false);
+                    return RedirectToAction("Index","Login");
             }
             catch (Exception e)
             {
-                return View(false);
+                return RedirectToAction("Index", "Login");
             }
         }
 
@@ -58,5 +64,45 @@ namespace AppAlertaDePrazos.Controllers
             }
             
         }
+
+        [HttpGet]
+        [Route("Usuario/CriarSenha")]
+        public IActionResult CriarSenha()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("Usuario/CriarSenha")]
+        public IActionResult CriarSenha(Usuario usuario)
+        {
+            try
+            {
+                string hash = HashHandler.HashPassword(usuario.PasswordHash);
+
+                Usuario user = usuario;
+                user.PasswordHash = hash;
+                user.IsActive = true;
+
+
+                var client = new RestClient("https://localhost:7049/Usuario/Editar");
+                var request = new RestRequest("https://localhost:7049/Usuario/Editar", Method.Post);
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("application/json", JsonConvert.SerializeObject(usuario), ParameterType.RequestBody);
+                var response = client.Execute(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    return Ok();
+                }
+                else
+                    throw new Exception("Falha ao criar senha: " + response.Content);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
+            }
+        }
+
     }
 }
