@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Regras";
 }
 
 <div class="text-center">
@@ -12,6 +12,7 @@
                 <th scope="col">#</th>
                 <th scope="col">Nome</th>
                 <th scope="col">Descrição</th>
+                <th scope="col-4">Cursos</th>
                 <th scope="col">Ativo</th>
                 <th scope="col">Ações</th>
             </tr>
@@ -23,6 +24,18 @@
                     <th scope="row">@regra.Id</th>
                     <td>@regra.Nome</td>
                     <td>@regra.Descricao</td>
+                    <td class="col-4">
+                        @foreach( var regraCurso in ViewBag.RegrasCursos)
+                        {
+                            if(regra.Id == regraCurso.Key.Id)
+                            {
+                                foreach(var curso in regraCurso.Value)
+                                {
+                                    @curso.Titulo <br /><br />
+                                }
+                            }
+                        }
+                    </td>
                     <td>
                         @if (regra.IsActive)
                         {
@@ -34,7 +47,6 @@
                         }
                     </td>
                     <td><a href="/Regras/Edit/@regra.Id"  title="Editar"><i class="fa-solid fa-pen"></i></a></td>
-                    @*<td>@Html.ActionLink("EDITAR","Edit","Regras","https", "localhost:7241", null,new { regraid = regra.Id }, null)</td>*@
                 </tr>
             }
         </tbody>

@@ -6,26 +6,54 @@
     <br />
     <div class="container">
         <input hidden type="text" id="Id" name="Id" value=@regra.Id />
-        <label for="Nome" class="form-label">Título:</label>
-        <input type="text" id="Nome" name="Nome" class="form-control" readonly value=@regra.Nome />
+        <div class="row">
+            <div>
+                <label for="Nome" class="form-label">Título:</label>
+                <input type="text" id="Nome" name="Nome" class="form-control" readonly value=@regra.Nome />
+            </div>
+        </div>
         <br />
 
-        <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="Descricao" name="Descricao" style="height: 100px">@regra.Descricao</textarea>
-            <label for="Descricao">Descricao</label>
+        <div class="row">
+            <div class="form-floating">
+                <textarea class="form-control" id="Descricao" name="Descricao" style="height: 100px">@regra.Descricao</textarea>
+                <label for="Descricao">Descricao</label>
+            </div>
+        </div>
+
+
+        <br />
+
+        @*<div class="row">
+            <div class="form-floating">
+                <textarea class="form-control" id="Parametros" name="Descricao" style="height: 100px">@regra.Parametros</textarea>
+                <label for="Parametros">Parametros</label>
+            </div>
+        </div>
+        <br />*@
+
+        <div class="row">
+            <div id="cursos">
+                
+            </div>
         </div>
         <br />
-        <div class="form-floating">
-            <textarea class="form-control" placeholder="Leave a comment here" id="Parametros" name="Descricao" style="height: 100px">@regra.Parametros</textarea>
-            <label for="Parametros">Parametros</label>
+
+        <div class="row">
+            <div>
+                <div class="form-check form-switch">
+                    @Html.CheckBox("", regra.IsActive, new { @class="form-check-input", @type="checkbox" ,@id="IsActive", @name="IsActive" })
+                    <label class="form-check-label" for="IsActive">ATIVAR</label>
+                </div>
+            </div>
         </div>
         <br />
-        <div class="form-check form-switch">
-            @Html.CheckBox("", regra.IsActive, new { @class="form-check-input", @type="checkbox" ,@id="IsActive", @name="IsActive" })
-            <label class="form-check-label" for="IsActive">Ativar</label>
+
+        <div class="row">
+            <div>
+                <button id="salvar" type="button" class="btn btn-primary" style="width: 100%">Salvar</button>
+            </div>
         </div>
-        <br />
-        <button id="salvar" type="button" class="btn btn-primary">Salvar</button>
     </div>
 
 </fieldset>
@@ -37,8 +65,41 @@
 
 
 
+    $.ajax({
+        type: "GET",
+        url: "/Curso/Get",
+        async: false,
+        success: function (response){
+            var cursos = ""
+            response.forEach((curso) => {
+                cursos += `
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="" id="curso-${curso.id}" name="checkbox-curso" checked>
+                    <label class="form-check-label" for="curso-${curso.id}">
+                        ${curso.titulo}
+                    </label>
+                </div>
+                `
+            })
+
+            $("#cursos").empty()
+            $("#cursos").html(cursos)
+        },
+        error: (result) => {
+            OpenModal("Erro!", "Falha ao buscar cursos da FACOM.")
+        }
+    });
 
     $("#salvar").click(() => {
+
+        var cursos = []
+        var elementListCursos = $('input[name="checkbox-curso"]:checked')
+        var val = []
+        elementListCursos.each(function() {
+                    cursos.push(parseInt(this.id.split('-')[1]))
+                });
+        myJsonString = JSON.stringify(cursos);
+
           $.ajax({
               type: "POST",
               url: "/Regras/Edit",
@@ -46,12 +107,11 @@
                         Id: $("#Id").val(),
                         Nome: $("#Nome").val(),
                         Descricao: $("#Descricao").val(),
-                        Parametros: $("#Parametros").val(),
+                        Parametros: myJsonString,
                         IsActive: $('#IsActive').is(":checked")
                     },
               async: false,
               success: () => {
-                  //$("#exampleModal").show();
                   OpenModal("Sucesso!", "Regra atualizada com sucesso.")
               },
               error: (result) => {

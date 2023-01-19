@@ -36,7 +36,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Rendimento",
                     Descricao = "Regra que define os critérios de avaliação do rendimento do discente",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -44,7 +44,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Trancamento Parical Ativo",
                     Descricao = "Regra que verifica se o aluno já trancou alguma disciplina",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -52,7 +52,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Trancamento Geral Ativo",
                     Descricao = "Regra que verifica se o aluno já realizou trancamento geral do semestre",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -60,7 +60,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Trancamento Parcial Passivo",
                     Descricao = "Notifica os alunos sobre os requisitos e limites previstos em norma para realizar trancamento parcial.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -68,7 +68,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Trancamento Geral Passivo",
                     Descricao = "Notifica os alunos sobre os requisitos e limites previstos em norma para realizar trancamento geral.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -76,7 +76,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Estagio Obrigatório Possível",
                     Descricao = "Verifica se o discente já atende aos requisitos previstos nas normas da graduação para poder dar início ao estágio obrigatório.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -84,7 +84,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Estagio Não Obrigatório Possível",
                     Descricao = "Verifica se o discente já atende aos requisitos previstos nas normas da graduação para poder dar início ao estágio não obrigatório.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -92,7 +92,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Estagio Obrigatório Ativo",
                     Descricao = "Verifica se o aluno está com estágio obrigatório em andamento para notifica-lo sobre prazos em relação ao estágio.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 },
                 new Regra
                 {
@@ -100,7 +100,7 @@ namespace ApiAlertaDePrazos.Data
                     Nome = "Estagio Não Obrigatório Ativo",
                     Descricao = "Verifica se o aluno está com estágio não obrigatório em andamento para notifica-lo sobre prazos em relação ao estágio.",
                     IsActive = true,
-                    Parametros = String.Empty
+                    Parametros = "[]"
                 }
                 );
         }

@@ -113,8 +113,10 @@ catch (Exception e)
 
 static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, List<Semestre> semestres, List<Regra> regras)
 {
+    
     Regra regra = regras.Where(x => x.Nome.ToLower() == tipoRegra).FirstOrDefault();
-    if(regra != null && regra.IsActive)
+    int[] cursoIdList = JsonConvert.DeserializeObject<int[]>(regra.Parametros);
+    if (regra != null && regra.IsActive && cursoIdList.Contains(aluno.CursoId))
     {
         switch (tipoRegra.ToLower())
         {
