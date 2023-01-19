@@ -1,8 +1,10 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using AlertaDePrazosLibrary.Entities;
+using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using AlertaDePrazosLibrary.Enums;
 using Newtonsoft.Json;
 using RestSharp;
+using RoboAlertaDePrazos;
 using System.Net;
 using System.Net.Mail;
 
@@ -10,34 +12,19 @@ using System.Net.Mail;
 
 try
 {
-    RestClient _client;
-    _client = new RestClient("https://localhost:7149/");
+    ClientUFU _clientUFU = new ClientUFU();
+    ClientSistemaAlertaDePrazos _clientSistemaAlertaDePrazos = new ClientSistemaAlertaDePrazos();
 
-    Semestre semestreAtual = null;
-    var request = new RestRequest("Semestre/GetSemestreAtual");
-    var response = await _client.ExecuteGetAsync(request);
-    semestreAtual = JsonConvert.DeserializeObject<Semestre>(response.Content);
+    //Dados UFU
+    Semestre semestreAtual = await _clientUFU.GetSemestreAtual();
+    List<Semestre> semestres = await _clientUFU.GetSemestres();
+    List<Estagio> estagios = await _clientUFU.GetEstagiosEmAberto();
+    List<Aluno> alunos = await _clientUFU.GetAlunos();
+    List<MatriculaDisciplina> matriculaDisciplinas = await _clientUFU.GetMatriculaDisciplinas();
+    List<Disciplina> disciplinas = await _clientUFU.GetDisciplinas();
 
-    request = new RestRequest("Semestre/Get");
-    response = await _client.ExecuteGetAsync(request);
-    List<Semestre> semestres = JsonConvert.DeserializeObject<List<Semestre>>(response.Content);
-
-    request = new RestRequest("Estagio/GetEstagiosEmAberto");
-    response = await _client.ExecuteGetAsync(request);
-    List<Estagio> estagios = JsonConvert.DeserializeObject<List<Estagio>>(response.Content);
-
-    request = new RestRequest("Aluno/Get");
-    response = await _client.ExecuteGetAsync(request);
-    List<Aluno> alunos = JsonConvert.DeserializeObject<List<Aluno>>(response.Content);
-
-    request = new RestRequest("MatriculaDisciplina/Get");
-    response = await _client.ExecuteGetAsync(request);
-    List<MatriculaDisciplina> matriculaDisciplinas = JsonConvert.DeserializeObject<List<MatriculaDisciplina>>(response.Content);
-
-    request = new RestRequest("Disciplina/Get");
-    response = await _client.ExecuteGetAsync(request);
-    List<Disciplina> disciplinas = JsonConvert.DeserializeObject<List<Disciplina>>(response.Content);
-
+    //Dados Sistema de Alerta
+    List<Regra> regras = await _clientSistemaAlertaDePrazos.GetRegras();
 
     List<int> Semestres = matriculaDisciplinas.Select(x => x.SemestreId).ToList();
 
@@ -58,7 +45,7 @@ try
         int semestresRemanescentes = 12 - semestresCorridos;
         if (qtdDisciplinasPendentes > semestresRemanescentes * 5)
         {
-            AlertaDilacaoDePrazo(aluno);
+            Alerta("rendimento", aluno, null, null, regras);
         }
 
 
@@ -77,17 +64,17 @@ try
         if (estagioEmAndamento != null)
         {
             if (estagioEmAndamento.Tipo == TipoEstagio.Obrigatorio)
-                AlertaEstagioObrigatorio(aluno);
+                Alerta("estagio obrigatório ativo", aluno, null, null, regras);
             else
-                AlertaEstagioNaoObrigatorio(aluno);
+                Alerta("estagio não obrigatório ativo", aluno, null, null, regras);
         }
         else
         {
             if (disciplinasEliminadas.Count >= 25)
-                AlertaPossivelEstagioObrigatorio(aluno);
+                Alerta("estagio obrigatório possível", aluno, null, null, regras);
             else
                 if (disciplinasEliminadas.Where(x => x.Periodo == Periodo.Primeiro).ToList().Count == 5 && disciplinasEliminadas.Where(x => x.Periodo == Periodo.Segundo).ToList().Count == 5)
-                    AlertaPossivelEstagioNaoObrigatorio(aluno);
+                Alerta("estagio não obrigatório possível", aluno, null, null, regras);
         }
 
 
@@ -95,9 +82,9 @@ try
         List<MatriculaDisciplina> matriculaDisciplinasTrancadas = matriculaDisciplinas.Where(x => x.Trancamento == true && x.AlunoId == aluno.Id).ToList();
         List<Disciplina> disciplinasTrancadas = disciplinas.Where(x => x.CursoId == aluno.CursoId && matriculaDisciplinasTrancadas.Any(y => y.DisciplinaId == x.Id)).ToList();
         if (disciplinasTrancadas.Count > 0)
-            AlertaTrancamentoParcialAtiva(aluno, disciplinasTrancadas);
+            Alerta("trancamento parical ativo", aluno, disciplinasTrancadas, null, regras);
         else
-            AlertaTrancamentoParcialPassivo(aluno);
+            Alerta("trancamento parcial passivo", aluno, null, null, regras);
 
         //Trancamento Geral
         List<Semestre> semestresTrancadosAluno = new List<Semestre>();
@@ -109,8 +96,8 @@ try
                 semestresTrancadosAluno.Add(semestre);
         }
         if (semestresTrancadosAluno.Count > 0)
-            AlertaTrancamentoGeralAtivo(aluno, semestresTrancadosAluno);
-        AlertaTrancamentoGeralPassivo(aluno);
+            Alerta("trancamento geral ativo", aluno, null, semestresTrancadosAluno, regras);
+        Alerta("trancamento geral passivo", aluno, null, null, regras);
     }
 
     Console.WriteLine("Sucesso");
@@ -123,6 +110,52 @@ catch (Exception e)
 }
 
 #region Alertas
+
+static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, List<Semestre> semestres, List<Regra> regras)
+{
+    Regra regra = regras.Where(x => x.Nome.ToLower() == tipoRegra).FirstOrDefault();
+    if(regra != null && regra.IsActive)
+    {
+        switch (tipoRegra.ToLower())
+        {
+            case "rendimento": AlertaDilacaoDePrazo(aluno); break;
+            case "trancamento parical ativo": AlertaTrancamentoParcialAtiva(aluno, disciplinas); break;
+            case "trancamento geral ativo": AlertaTrancamentoGeralAtivo(aluno, semestres); break;
+            case "trancamento parcial passivo": AlertaTrancamentoParcialPassivo(aluno); break;
+            case "trancamento geral passivo": AlertaTrancamentoGeralPassivo(aluno); break;
+            case "estagio obrigatório possível": AlertaPossivelEstagioObrigatorio(aluno); break;
+            case "estagio não obrigatório possível": AlertaPossivelEstagioNaoObrigatorio(aluno); break;
+            case "estagio obrigatório ativo": AlertaEstagioObrigatorio(aluno); break;
+            case "estagio não obrigatório ativo": AlertaEstagioNaoObrigatorio(aluno); break;
+        }
+    }
+}
+
+
+static void AlertaTrancamentoParcial(Aluno aluno)
+{
+    Console.WriteLine($"[Trancamento Parcial] {aluno.Id}");
+    string assunto = "[UFU] Alerta de matrículas em disciplinas";
+    string body = @"<html>
+                      <body style='font-size: 1.8rem'>
+                      <p style='font-size: 2rem'>Caro Aluno.</p>
+                      <p>Foi identificado que você está matriculado em 2 componentes curriculares nesse semestre.</p>
+                      <p>Se atente a norma da instituição que define que um aluno deve se matricuar em no mínimo 2 disciplinas.</p>
+                      <p>Logo, sugerimos que procure aumentar o número de componentes curriculares neste semestre por meio do Reajuste de disciplinas no Portal do Aluno.</p>
+                      <p>Norma:
+                        <ul style='font-size: 1.5rem'>
+                        <li> Art. 111. Não poderá ser concedido trancamento parcial que resulte em vinculação inferior a 2 (dois) componentes curriculares do curso. </li>
+                        </ul></p>
+                        <br/><br/>
+                      <p>Atenciosamente,<br>Coordenação.</br></p>
+                    <img src='https://www.gov.br/participamaisbrasil/blob/ver/15491?w=0&h=0' class='media - object  img - responsive img - thumbnail' >
+                               </body>
+                      </html>
+                     ";
+    if (!EnviarEmail(assunto, body, ""))
+        throw new Exception("[Trancamento Parcial] Falha ao enviar e-mail.");
+}
+
 static void AlertaDilacaoDePrazo(Aluno aluno)
 {
     Console.WriteLine($"[Dilação de Prazo] {aluno.Id}");
@@ -151,31 +184,6 @@ static void AlertaDilacaoDePrazo(Aluno aluno)
     if (!EnviarEmail(assunto, body, ""))
         throw new Exception("[Dilação de Prazo] Falha ao enviar e-mail.");
 }
-
-static void AlertaTrancamentoParcial(Aluno aluno)
-{
-    Console.WriteLine($"[Trancamento Parcial] {aluno.Id}");
-    string assunto = "[UFU] Alerta de matrículas em disciplinas";
-    string body = @"<html>
-                      <body style='font-size: 1.8rem'>
-                      <p style='font-size: 2rem'>Caro Aluno.</p>
-                      <p>Foi identificado que você está matriculado em 2 componentes curriculares nesse semestre.</p>
-                      <p>Se atente a norma da instituição que define que um aluno deve se matricuar em no mínimo 2 disciplinas.</p>
-                      <p>Logo, sugerimos que procure aumentar o número de componentes curriculares neste semestre por meio do Reajuste de disciplinas no Portal do Aluno.</p>
-                      <p>Norma:
-                        <ul style='font-size: 1.5rem'>
-                        <li> Art. 111. Não poderá ser concedido trancamento parcial que resulte em vinculação inferior a 2 (dois) componentes curriculares do curso. </li>
-                        </ul></p>
-                        <br/><br/>
-                      <p>Atenciosamente,<br>Coordenação.</br></p>
-                    <img src='https://www.gov.br/participamaisbrasil/blob/ver/15491?w=0&h=0' class='media - object  img - responsive img - thumbnail' >
-                               </body>
-                      </html>
-                     ";
-    if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Parcial] Falha ao enviar e-mail.");
-}
-
 static void AlertaTrancamentoParcialAtiva(Aluno aluno, List<Disciplina> disciplinas)
 {
     Console.WriteLine($"[Trancamento Parcial Ativa] {aluno.Id}");
@@ -232,7 +240,6 @@ static void AlertaTrancamentoParcialPassivo(Aluno aluno)
     if (!EnviarEmail(assunto, body, ""))
         throw new Exception("[Trancamento Parical Passivo] Falha ao enviar e-mail.");
 }
-
 static void AlertaEstagioObrigatorio(Aluno aluno)
 {
     Console.WriteLine($"[Estagio Obrigatorio] {aluno.Id}");
@@ -317,7 +324,6 @@ static void AlertaPossivelEstagioNaoObrigatorio(Aluno aluno)
     if (!EnviarEmail(assunto, body, ""))
         throw new Exception("[Estágio Não Obrigatório Disponível] Falha ao enviar e-mail.");
 }
-
 static void AlertaTrancamentoGeralAtivo(Aluno aluno, List<Semestre> semestres)
 {
     Console.WriteLine($"[Trancamento Geral Ativo] {aluno.Id}");
@@ -396,25 +402,4 @@ static bool EnviarEmail(string assunto, string corpo, string destinatario)
     {
         return false;
     }
-}
-
-static void TesteEmail()
-{
-
-    string body = @"<html>
-                      <body>
-                      <p>Caro Aluno</p>
-                      <p>Seu rendimento acadêmico atual está próximo de atingir um nível crítico, devido ao tempo limite disponível para a conclusão do curso estar próximo de ser insuficiente para eliminar o volume de disciplinas pendentes.</p>
-                      <p>Recomendamos atenção urgente a esse tema pois excedido o tempo limite pode resultar em jubilamento</p>
-                      <p>Caso o atinja o tempo limite, será possível solicitar dilação do prazo caso o aluno atenda aos seguintes rqeuisitos:</p>
-
-                      <p>Atenciosamente,<br>-Jack</br></p>
-                      </body>
-                      </html>
-                     ";
-    if (EnviarEmail("Teste", body, ""))
-        Console.WriteLine("Teste de envio de e-mai: [SUCESSO]");
-    else
-        Console.WriteLine("Teste de envio de e-mai: [FALHA]");
-
 }
