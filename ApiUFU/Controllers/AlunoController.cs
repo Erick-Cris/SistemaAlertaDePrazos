@@ -36,94 +36,12 @@ namespace ApiUFU.Controllers
             return alunos;
         }
 
-        [HttpPost]
-        [Route("SeedAlunos")]
-        public IActionResult PopularAlunos()
-        {
-            try
-            {
-                PersonNameGenerator geradorDeNomes = new PersonNameGenerator();
-                Dictionary<int, List<Disciplina>> dict = new Dictionary<int, List<Disciplina>>();
-
-
-                using (var db = new UFUContext())
-                {
-                    Curso cursoss = db.Cursos.ToList().FirstOrDefault();
-                    List<Disciplina> disciplinass = db.Disciplinas.ToList();
-                    dict.Add(cursoss.Id, disciplinass);
-
-
-                    //Anos
-                    for (int k = 2014; k < DateTime.Now.Year; k++)
-                    {
-                        Semestre primeiroSemestre = new Semestre() { ano = k, ordem = 1, DataInicio = new DateTime(k, 1, 1), DataFim = new DateTime(k, 6, 15) };
-                        Semestre segundoSemestre = new Semestre() { ano = k, ordem = 2, DataInicio = new DateTime(k, 7, 1), DataFim = new DateTime(k, 12, 15) };
-                        db.Semestres.Add(primeiroSemestre);
-                        db.Semestres.Add(segundoSemestre);
-                        db.SaveChanges();
-
-                        List<Curso> cursos = db.Cursos.ToList();
-                        foreach (KeyValuePair<int, List<Disciplina>> curso in dict)
-                        {
-                            bool isPrimeiroSemestre = true;
-                            for (int i = 1; i <= 140; i++)
-                            {
-
-                                if (i == 71) isPrimeiroSemestre = !isPrimeiroSemestre;
-                                Aluno aluno = new Aluno();
-                                aluno.Id = $"{2015 - k}{(isPrimeiroSemestre ? primeiroSemestre.ordem : segundoSemestre.ordem)}BSI{i}";
-                                aluno.CursoId = 1;
-                                aluno.Nome = geradorDeNomes.GenerateRandomFirstAndLastName();
-                                aluno.DataNascimento = new DateTime(1996, 6, 6);
-                                aluno.Email = "erickcristianup@gmail.com";
-                                aluno.DataIngresso = isPrimeiroSemestre ? primeiroSemestre.DataInicio : segundoSemestre.DataInicio;
-                                
-
-
-                                int qtdSemestresCumpridos = DateTime.Now.Month > 5 ? (DateTime.Now.Year - k) * 2 : ((DateTime.Now.Year - k) * 2) - 1;
-                                List<Disciplina> disciplinasAluno = new List<Disciplina>();
-
-                                int qtdDiscipilinas = new Random().Next(0, 6);
-
-                                for (int j = 1; j <= qtdSemestresCumpridos; j++)
-                                {
-                                    if (j <= 8)
-                                    {
-                                        //Add 5 disciplinas do período atual do aluno
-                                        List<Disciplina> disciplinasDoPeriodo = curso.Value.Where(x => ((int)x.Periodo) == j).ToList();
-                                        disciplinasDoPeriodo = Functions.ValidaDisciplinas(disciplinasAluno, disciplinasDoPeriodo);
-
-
-                                        List<Disciplina> disciplinasAprovadas = disciplinasDoPeriodo.OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList();
-                                    }
-                                    else
-                                    {
-                                        //Add até 5 disciplinas aleatórias
-                                        disciplinasAluno.AddRange(Functions.ValidaDisciplinas(disciplinasAluno, curso.Value.Except(disciplinasAluno).ToList()).OrderBy(r => new Random().Next()).Take(qtdDiscipilinas).ToList());
-                                    }
-                                }
-                                db.Alunos.Add(aluno);
-                                db.SaveChanges();
-                                foreach (Disciplina disciplina in disciplinasAluno)
-                                    db.MatriculaDisciplinas.Add(new MatriculaDisciplina(aluno.Id, disciplina.Id, isPrimeiroSemestre ? primeiroSemestre.Id : segundoSemestre.Id));
-                                db.SaveChanges();
-                            }
-                        }
-                    }
-                }
-
-                return Ok("Base populada com sucesso!");
-            }
-            catch(Exception e)
-            {
-                return StatusCode(StatusCodes.Status500InternalServerError, e.Message);
-            }
-        }
-
         [HttpGet]
         [Route("SeedAlunosV2")]
         public IActionResult PopularAlunosV2()
         {
+            //Popula Base da UFU
+            //Adiciona Semestres, alunos e estágios para uma quantidad.
             try
             {
                 PersonNameGenerator geradorDeNomes = new PersonNameGenerator();
@@ -145,8 +63,9 @@ namespace ApiUFU.Controllers
                     }
                     
 
-                    var anoInicio = 2014;
+                    var anoInicio = 2014;//Ano de início para criação de semestres.
 
+                    //Ano
                     for (int k = anoInicio; k < DateTime.Now.Year; k++)
                     {
                         //Semestres
@@ -171,7 +90,7 @@ namespace ApiUFU.Controllers
                             for (int i = 1; i <= 70; i++)
                             {
                                 Aluno aluno = new Aluno();
-                                aluno.Id = $"{semestre.ano - (anoInicio - 1)}{semestre.ordem}BSI{i}";
+                                aluno.Id = $"{semestre.ano - (anoInicio - 1)}{semestre.ordem}{curso.Key}BSI{i}";
                                 aluno.CursoId = curso.Key;
                                 aluno.Nome = geradorDeNomes.GenerateRandomFirstAndLastName();
                                 aluno.DataNascimento = new DateTime(1996, 6, 6);

@@ -19,14 +19,17 @@ namespace AppAlertaDePrazos.Controllers
 
         public IActionResult Index()
         {
+            //Busca regras
             var client = new RestClient("https://localhost:7049");
             var request = new RestRequest("Regras/get", Method.Get);
             List<Regra> regras = client.Execute<List<Regra>>(request).Data;
 
+            //Busca Cursos da FACOM
             client = new RestClient("https://localhost:7149");
             request = new RestRequest("Curso/Get", Method.Get);
             var cursos = client.Execute<List<Curso>>(request).Data;
 
+            //Prepara dados para serem dispostos no front end, na tela de regras
             Dictionary<Regra, List<Curso>> regrasCursos = new Dictionary<Regra, List<Curso>>();
             ViewBag.Regras = regras;
             foreach(var regra in regras)

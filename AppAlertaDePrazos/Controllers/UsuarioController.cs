@@ -13,7 +13,8 @@ namespace AppAlertaDePrazos.Controllers
         [Route("Usuario/Ativar/{token}")]
         public IActionResult Ativar(string token)
         {
-
+            //Redireciona para tela de criação de senhas
+            //Entrada: Usuário clica no link de ativação enviado para sua caixa de e-mail
             try
             {
                 var url = $"https://localhost:7049/Usuario/Ativar/?token={token}";

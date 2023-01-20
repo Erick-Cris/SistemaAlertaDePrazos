@@ -26,7 +26,7 @@ namespace ApiAlertaDePrazos.Data
                    Nome = "Administrador",
                    Email = "erickcristianup@gmail.com",
                    IsActive = true,
-                   PasswordHash = "123456"
+                   PasswordHash = "7C4A8D09CA3762AF61E59520943DC26494F8941B"
                });
 
            modelBuilder.Entity<Regra>().HasData(

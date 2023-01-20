@@ -5,25 +5,10 @@ namespace ApiUFU.Utils
 {
     public class Functions
     {
-        public static List<Disciplina> ValidaDisciplinas(List<Disciplina> disciplinasAnteriores, List<Disciplina> disciplinasAtuais)
-        {
-            List<Disciplina> disciplinasPossiveis = new List<Disciplina>();
 
-            foreach (Disciplina disciplina in disciplinasAtuais)
-            {
-                if (disciplina.IdDisciplina != null)
-                {
-                    if (disciplinasAnteriores.Where(x => x.Id == disciplina.IdDisciplina).Count() > 0)
-                        disciplinasPossiveis.Add(disciplina);
-                }
-                else
-                {
-                    disciplinasPossiveis.Add(disciplina);
-                }
-            }
-            return disciplinasPossiveis;
-        }
-
+        //Valida disciplinas que o aluno pode fazer
+        //Entrada: Aluno, disciplinas eliminadas, possíveis disciplinas candidatas para matrícula
+        //Saída: Disciplinas liberadas para o aluno fazer
         public static List<Disciplina> ValidaDisciplinasV2(Aluno aluno, List<MatriculaDisciplina> disciplinasAnteriores, List<Disciplina> disciplinasAtuais)
         {
             List<Disciplina> disciplinasPossiveis = new List<Disciplina>();
@@ -43,14 +28,8 @@ namespace ApiUFU.Utils
             return disciplinasPossiveis;
         }
 
-        public static bool VerificaEstagioNaoObrigatorio(Aluno aluno, List<MatriculaDisciplina> matriculaDisciplina, List<Disciplina> disciplinasBloqueantes)
-        {
-            List<MatriculaDisciplina> disciplinasEliminadas = matriculaDisciplina.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).ToList();
-            if (disciplinasBloqueantes.Where(x => disciplinasEliminadas.Any(y => y.DisciplinaId == x.Id)).ToList().Count == disciplinasBloqueantes.Count)
-                return true;
-            else
-                return false;
-        }
+        //Verifica se aluno pode fazer estágio
+        //Saída: cria um estágio para o aluno conforme a disponibilidade do aluno conforme as normas.
         public static Estagio AlunoFazEstagio(Aluno aluno, List<MatriculaDisciplina> matriculaDisciplinas, List<Disciplina> disciplinas, List<Estagio> estagios, Semestre semestre, Curso curso, bool estagioEmAndamento)
         {
             List<MatriculaDisciplina> disciplinasEliminadas = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).ToList();

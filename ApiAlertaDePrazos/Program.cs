@@ -16,6 +16,8 @@ builder.Services.AddCors(options =>
                       });
 });
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);//Configuração
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

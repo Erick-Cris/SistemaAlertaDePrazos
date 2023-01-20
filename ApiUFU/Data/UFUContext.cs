@@ -21,6 +21,24 @@ namespace ApiUFU.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Curso>().HasData(
+                new Curso
+                {
+                    Id = 1,
+                    Titulo = "Sistemas de Informação - Santa Mônica",
+                },
+                new Curso
+                {
+                    Id = 2,
+                    Titulo = "Sistemas de Informação - Monte Carmelo",
+                },
+                new Curso
+                {
+                    Id = 3,
+                    Titulo = "Ciências da Computação - Santa Mônica",
+                }
+                );
+
             modelBuilder.Entity<Disciplina>().HasData(
                 new Disciplina
                 {

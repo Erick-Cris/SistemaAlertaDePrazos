@@ -28,5 +28,25 @@ namespace RoboAlertaDePrazos
             return regras;
         }
 
+        public async Task<List<Alerta>> GetAlertas()
+        {
+            var request = new RestRequest("Alerta/Get");
+            var response = await _client.ExecuteGetAsync(request);
+            List<Alerta> alertas = JsonConvert.DeserializeObject<List<Alerta>>(response.Content);
+
+            return alertas;
+        }
+
+        public bool CriarAlerta(Alerta alerta)
+        {
+            var request = new RestRequest("Alerta/Create");
+            request.AddBody(alerta);
+            var response = _client.ExecutePost(request);
+
+            if (response.IsSuccessStatusCode)
+                return true;
+            else
+                return false;
+        }
     }
 }

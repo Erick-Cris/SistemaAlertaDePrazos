@@ -1,17 +1,16 @@
-﻿// See https://aka.ms/new-console-template for more information
-using AlertaDePrazosLibrary.Entities;
+﻿using AlertaDePrazosLibrary.Entities;
 using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using AlertaDePrazosLibrary.Enums;
 using Newtonsoft.Json;
-using RestSharp;
 using RoboAlertaDePrazos;
-using System.Net;
-using System.Net.Mail;
 
 
 
 try
 {
+    Console.WriteLine("<======================== INICIO DA EXECUÇÃO ============================>");
+
+    //Clients de acesso a APIs
     ClientUFU _clientUFU = new ClientUFU();
     ClientSistemaAlertaDePrazos _clientSistemaAlertaDePrazos = new ClientSistemaAlertaDePrazos();
 
@@ -22,107 +21,114 @@ try
     List<Aluno> alunos = await _clientUFU.GetAlunos();
     List<MatriculaDisciplina> matriculaDisciplinas = await _clientUFU.GetMatriculaDisciplinas();
     List<Disciplina> disciplinas = await _clientUFU.GetDisciplinas();
+    List<Alerta> alertas = await _clientSistemaAlertaDePrazos.GetAlertas();
 
     //Dados Sistema de Alerta
     List<Regra> regras = await _clientSistemaAlertaDePrazos.GetRegras();
 
-    List<int> Semestres = matriculaDisciplinas.Select(x => x.SemestreId).ToList();
-
     foreach (Aluno aluno in alunos)
     {
-        List<MatriculaDisciplina> matriculaDisciplinasAluno = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id).ToList();
-        List<Disciplina> disciplinasObrigatoriasDoCurso = disciplinas.Where(x => x.CursoId == aluno.CursoId).ToList();
-        List<Disciplina> disciplinasEliminadas = disciplinasObrigatoriasDoCurso.Where(x => matriculaDisciplinas.Any(y => y.AlunoId == aluno.Id && y.Nota >= 60 && y.DisciplinaId == x.Id)).ToList();
-
-        //Verificar Desempenho
-        int qtdDisciplinasEliminadas = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).Count();
-        int semestresCorridos = (DateTime.Now.Year - aluno.DataIngresso.Year) * 2;
-        if (aluno.DataIngresso.Month > 4) semestresCorridos = semestresCorridos - 1;
-        if (DateTime.Now.Month < 4) semestresCorridos = semestresCorridos - 1;
-        semestresCorridos = semestresCorridos - 1;//Para desconsiderar as disciplinas em andamento
-
-        int qtdDisciplinasPendentes = 40 - qtdDisciplinasEliminadas;
-        int semestresRemanescentes = 12 - semestresCorridos;
-        if (qtdDisciplinasPendentes > semestresRemanescentes * 5)
+        try
         {
-            Alerta("rendimento", aluno, null, null, regras);
-        }
+            List<MatriculaDisciplina> matriculaDisciplinasAluno = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id).ToList();
+            List<Disciplina> disciplinasObrigatoriasDoCurso = disciplinas.Where(x => x.CursoId == aluno.CursoId).ToList();
+            List<Disciplina> disciplinasEliminadas = disciplinasObrigatoriasDoCurso.Where(x => matriculaDisciplinas.Any(y => y.AlunoId == aluno.Id && y.Nota >= 60 && y.DisciplinaId == x.Id)).ToList();
 
+            //Regra Verificar Desempenho do Disciente [Sistemas de Informação - Santa Mônica]
+            int qtdDisciplinasEliminadas = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.Nota >= 60).Count();
+            int semestresCorridos = (DateTime.Now.Year - aluno.DataIngresso.Year) * 2;
+            if (aluno.DataIngresso.Month > 4) semestresCorridos = semestresCorridos - 1;
+            if (DateTime.Now.Month < 4) semestresCorridos = semestresCorridos - 1;
+            semestresCorridos = semestresCorridos - 1;//Para desconsiderar as disciplinas em andamento
+            int qtdDisciplinasPendentes = 40 - qtdDisciplinasEliminadas;
+            int semestresRemanescentes = 12 - semestresCorridos;
+            if (qtdDisciplinasPendentes > semestresRemanescentes * 5)
+            {
+                Alerta("rendimento", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+            }
 
+            //Regra Aluno se matriculou apenas em 2 disciplinas [Sistemas de Informação - Santa Mônica]
+            if (semestreAtual != null)
+            {
+                List<MatriculaDisciplina> disciplinasAlunoSemestre = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.SemestreId == semestreAtual.Id).ToList();
+                if (disciplinasAlunoSemestre.Count < 3)
+                    AlertaTrancamentoParcial(aluno);
+            }
 
-        //Verificar se só se matriculou em 2 disciplinas
-        if (semestreAtual != null)
-        {
-            List<MatriculaDisciplina> disciplinasAlunoSemestre = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.SemestreId == semestreAtual.Id).ToList();
-            if (disciplinasAlunoSemestre.Count < 3)
-                AlertaTrancamentoParcial(aluno);
-        }
-
-        //Verificar Estagios
-        Estagio estagioEmAndamento = estagios.Where(x => x.Status == StatusEstagio.EmAndamento && x.AlunoId == aluno.Id).ToList().FirstOrDefault();
-
-        if (estagioEmAndamento != null)
-        {
-            if (estagioEmAndamento.Tipo == TipoEstagio.Obrigatorio)
-                Alerta("estagio obrigatório ativo", aluno, null, null, regras);
+            //Regra verificar Estagios [Sistemas de Informação - Santa Mônica]
+            Estagio estagioEmAndamento = estagios.Where(x => x.Status == StatusEstagio.EmAndamento && x.AlunoId == aluno.Id).ToList().FirstOrDefault();
+            if (estagioEmAndamento != null)
+            {
+                if (estagioEmAndamento.Tipo == TipoEstagio.Obrigatorio)
+                    Alerta("estagio obrigatório ativo", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+                else
+                    Alerta("estagio não obrigatório ativo", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+            }
             else
-                Alerta("estagio não obrigatório ativo", aluno, null, null, regras);
-        }
-        else
-        {
-            if (disciplinasEliminadas.Count >= 25)
-                Alerta("estagio obrigatório possível", aluno, null, null, regras);
+            {
+                if (disciplinasEliminadas.Count >= 25)
+                    Alerta("estagio obrigatório possível", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+                else
+                    if (disciplinasEliminadas.Where(x => x.Periodo == Periodo.Primeiro).ToList().Count == 5 && disciplinasEliminadas.Where(x => x.Periodo == Periodo.Segundo).ToList().Count == 5)
+                    Alerta("estagio não obrigatório possível", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+            }
+
+
+            //Regra Trancamento Parcial [Sistemas de Informação - Santa Mônica]
+            List<MatriculaDisciplina> matriculaDisciplinasTrancadas = matriculaDisciplinas.Where(x => x.Trancamento == true && x.AlunoId == aluno.Id).ToList();
+            List<Disciplina> disciplinasTrancadas = disciplinas.Where(x => x.CursoId == aluno.CursoId && matriculaDisciplinasTrancadas.Any(y => y.DisciplinaId == x.Id)).ToList();
+            if (disciplinasTrancadas.Count > 0)
+                Alerta("trancamento parical ativo", aluno, disciplinasTrancadas, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
             else
-                if (disciplinasEliminadas.Where(x => x.Periodo == Periodo.Primeiro).ToList().Count == 5 && disciplinasEliminadas.Where(x => x.Periodo == Periodo.Segundo).ToList().Count == 5)
-                Alerta("estagio não obrigatório possível", aluno, null, null, regras);
+                Alerta("trancamento parcial passivo", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
+
+            //Regra Trancamento Geral [Sistemas de Informação - Santa Mônica]
+            List<Semestre> semestresTrancadosAluno = new List<Semestre>();
+            List<int> semestresIdCursadosAluno = matriculaDisciplinasAluno.Select(x => x.SemestreId).ToList();
+            List<Semestre> semestresDesdeIngressoAluno = semestres.Where(x => x.DataInicio >= aluno.DataIngresso).ToList();
+            foreach (Semestre semestre in semestresDesdeIngressoAluno)
+            {
+                if (semestresIdCursadosAluno.Where(x => x == semestre.Id).ToList().Count > 0)
+                    semestresTrancadosAluno.Add(semestre);
+            }
+            if (semestresTrancadosAluno.Count > 0)
+                Alerta("trancamento geral ativo", aluno, null, semestres, semestresTrancadosAluno, regras, alertas, _clientSistemaAlertaDePrazos);
+            Alerta("trancamento geral passivo", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
         }
-
-
-        //Trancamento Parcial
-        List<MatriculaDisciplina> matriculaDisciplinasTrancadas = matriculaDisciplinas.Where(x => x.Trancamento == true && x.AlunoId == aluno.Id).ToList();
-        List<Disciplina> disciplinasTrancadas = disciplinas.Where(x => x.CursoId == aluno.CursoId && matriculaDisciplinasTrancadas.Any(y => y.DisciplinaId == x.Id)).ToList();
-        if (disciplinasTrancadas.Count > 0)
-            Alerta("trancamento parical ativo", aluno, disciplinasTrancadas, null, regras);
-        else
-            Alerta("trancamento parcial passivo", aluno, null, null, regras);
-
-        //Trancamento Geral
-        List<Semestre> semestresTrancadosAluno = new List<Semestre>();
-        List<int> semestresIdCursadosAluno = matriculaDisciplinasAluno.Select(x => x.SemestreId).ToList();
-        List<Semestre> semestresDesdeIngressoAluno = semestres.Where(x => x.DataInicio >= aluno.DataIngresso).ToList();
-        foreach (Semestre semestre in semestresDesdeIngressoAluno)
+        catch (Exception ex)
         {
-            if (semestresIdCursadosAluno.Where(x => x == semestre.Id).ToList().Count > 0)
-                semestresTrancadosAluno.Add(semestre);
+            Console.WriteLine($"[ERRO][ALUNO: {aluno.Id}] {ex.Message} {ex.StackTrace}");
         }
-        if (semestresTrancadosAluno.Count > 0)
-            Alerta("trancamento geral ativo", aluno, null, semestresTrancadosAluno, regras);
-        Alerta("trancamento geral passivo", aluno, null, null, regras);
+        
     }
 
-    Console.WriteLine("Sucesso");
-    while (true) { }
+    Console.WriteLine("");
+    Console.WriteLine("<======================== FIM DA EXECUÇÃO ============================>");
+    while (true) { /*Manter console aberto após fim da execução*/}
 }
 catch (Exception e)
 {
-    Console.WriteLine($"[ERRO] {e.Message} {e.StackTrace}");
-    while (true) { }
+    Console.WriteLine($"[ERRO][CRÍTICO] {e.Message} {e.StackTrace}");
+    while (true) { /*Manter console aberto após fim da execução*/ }
 }
 
-#region Alertas
-
-static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, List<Semestre> semestres, List<Regra> regras)
+//Método de disparo de Alertas.
+//Encapsula o disparo de todos os Alertas.
+static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, List<Semestre> semestres, List<Semestre> semestresTrancadosPorAluno, List<Regra> regras, List<Alerta> alertas, ClientSistemaAlertaDePrazos _client)
 {
-    
     Regra regra = regras.Where(x => x.Nome.ToLower() == tipoRegra).FirstOrDefault();
     int[] cursoIdList = JsonConvert.DeserializeObject<int[]>(regra.Parametros);
-    if (regra != null && regra.IsActive && cursoIdList.Contains(aluno.CursoId))
+
+    Alerta alertaMaisRecente = alertas.Where(x => x.MatriculaAluno == aluno.Id && x.RegraId == regra.Id).OrderByDescending(x => x.DataAlerta).ToList().FirstOrDefault();
+    bool flagAlertaDisponivel = VerificaDisponibilidadeAlerta(semestres, alertaMaisRecente);
+
+    if (regra != null && regra.IsActive && cursoIdList.Contains(aluno.CursoId) && regra.IsActive && flagAlertaDisponivel)
     {
         switch (tipoRegra.ToLower())
         {
             case "rendimento": AlertaDilacaoDePrazo(aluno); break;
             case "trancamento parical ativo": AlertaTrancamentoParcialAtiva(aluno, disciplinas); break;
-            case "trancamento geral ativo": AlertaTrancamentoGeralAtivo(aluno, semestres); break;
+            case "trancamento geral ativo": AlertaTrancamentoGeralAtivo(aluno, semestresTrancadosPorAluno); break;
             case "trancamento parcial passivo": AlertaTrancamentoParcialPassivo(aluno); break;
             case "trancamento geral passivo": AlertaTrancamentoGeralPassivo(aluno); break;
             case "estagio obrigatório possível": AlertaPossivelEstagioObrigatorio(aluno); break;
@@ -130,10 +136,19 @@ static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, 
             case "estagio obrigatório ativo": AlertaEstagioObrigatorio(aluno); break;
             case "estagio não obrigatório ativo": AlertaEstagioNaoObrigatorio(aluno); break;
         }
+
+        Alerta alerta = new Alerta() { MatriculaAluno = aluno.Id, RegraId = regra.Id, DataAlerta = DateTime.Now};
+        if (!_client.CriarAlerta(alerta))
+            throw new Exception($"Falha ao criar Alerta. Aluno: {aluno.Id}, Regra: {regra.Id}, Data/Hora: {DateTime.Now}");
+        else
+            alertas.Add(alerta);
     }
 }
 
-
+//Métodos de disparo de e-mail.
+//Encapsula Mensagem e disparo de e-mail do alerta.
+//Sua descrição pode ser lida no corpo do e-mail do método.
+#region Alertas
 static void AlertaTrancamentoParcial(Aluno aluno)
 {
     Console.WriteLine($"[Trancamento Parcial] {aluno.Id}");
@@ -155,9 +170,8 @@ static void AlertaTrancamentoParcial(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Parcial] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Trancamento Parcial][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
-
 static void AlertaDilacaoDePrazo(Aluno aluno)
 {
     Console.WriteLine($"[Dilação de Prazo] {aluno.Id}");
@@ -184,7 +198,7 @@ static void AlertaDilacaoDePrazo(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Dilação de Prazo] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Dilação de Prazo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoParcialAtiva(Aluno aluno, List<Disciplina> disciplinas)
 {
@@ -217,7 +231,7 @@ static void AlertaTrancamentoParcialAtiva(Aluno aluno, List<Disciplina> discipli
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Parcial Ativa] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Trancamento Parcial Ativa][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoParcialPassivo(Aluno aluno)
 {
@@ -240,7 +254,7 @@ static void AlertaTrancamentoParcialPassivo(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Parical Passivo] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Trancamento Parical Passivo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaEstagioObrigatorio(Aluno aluno)
 {
@@ -263,7 +277,7 @@ static void AlertaEstagioObrigatorio(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Estagio Obrigatorio] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Estagio Obrigatorio][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaEstagioNaoObrigatorio(Aluno aluno)
 {
@@ -286,7 +300,7 @@ static void AlertaEstagioNaoObrigatorio(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Estágio Não Obrigatório] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Estágio Não Obrigatório][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaPossivelEstagioObrigatorio(Aluno aluno)
 {
@@ -305,7 +319,7 @@ static void AlertaPossivelEstagioObrigatorio(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Estágio Obrigatório Disponível] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Estágio Obrigatório Disponível][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaPossivelEstagioNaoObrigatorio(Aluno aluno)
 {
@@ -324,7 +338,7 @@ static void AlertaPossivelEstagioNaoObrigatorio(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Estágio Não Obrigatório Disponível] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Estágio Não Obrigatório Disponível][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoGeralAtivo(Aluno aluno, List<Semestre> semestres)
 {
@@ -346,7 +360,7 @@ static void AlertaTrancamentoGeralAtivo(Aluno aluno, List<Semestre> semestres)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Geral Ativo] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Trancamento Geral Ativo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoGeralPassivo(Aluno aluno)
 {
@@ -373,10 +387,43 @@ static void AlertaTrancamentoGeralPassivo(Aluno aluno)
                       </html>
                      ";
     if (!EnviarEmail(assunto, body, ""))
-        throw new Exception("[Trancamento Geral Passivo] Falha ao enviar e-mail.");
+        throw new Exception($"[ERRO][Trancamento Geral Passivo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 #endregion
 
+//Verifica se o alerta já foi enviado, para evitar SPAM.
+static bool VerificaDisponibilidadeAlerta(List<Semestre> semestres, Alerta alerta)
+{
+    Semestre semestreAtual = semestres.Where(x => x.DataInicio <= DateTime.Now && x.DataFim >= DateTime.Now).ToList().FirstOrDefault();
+    Semestre ultimoSemestreCorrido = semestres.Where(x => x.DataFim < DateTime.Now).OrderByDescending(x => x.DataFim).ToList().FirstOrDefault();
+
+    if (alerta != null)//Já existe um alerta desse tipo disparado para o aluno
+    {
+        if (semestreAtual == null)//Execução está ocorreno fora de um semestre (nas férias)
+        {
+            if (alerta.DataAlerta < ultimoSemestreCorrido.DataInicio)//Alerta já ocorreu antes do último semestre corrido
+                return true;
+            else if (alerta.DataAlerta >= ultimoSemestreCorrido.DataInicio && alerta.DataAlerta <= ultimoSemestreCorrido.DataFim)//Alerta ocorreu dentro do último semestre corrido
+                return true;
+            else
+                return false;//Alerta já ocorreu após o último semestre (nas férias)
+        }
+        else
+        {
+            if (alerta.DataAlerta < semestreAtual.DataInicio)//Alerta ocorreu antes do semestre atual
+                return true;
+            else if (alerta.DataAlerta >= semestreAtual.DataInicio && alerta.DataAlerta <= semestreAtual.DataFim)//Alerta já ocorreu durante o semestre atual
+                return false;
+            else
+                throw new Exception($"Erro de lógica ao validar disponibilidade de envio do alerta.");//Alerta já ocorreu depois do semestre atual (não deve ser possível)
+        }
+    }
+    else
+        return true;//Ainda não foi disparado esse tipo de alerta para o aluno
+
+}
+
+//Método que dispara o e-mail por meio de um servidor de e-mails SMTP da Outlook.
 static bool EnviarEmail(string assunto, string corpo, string destinatario)
 {
     try

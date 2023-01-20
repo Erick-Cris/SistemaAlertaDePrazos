@@ -13,6 +13,12 @@ namespace ApiAlertaDePrazos.Controllers
     public class UsuarioController : ControllerBase
     {
 
+        private IConfiguration _configuration;
+        public UsuarioController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
+
         [HttpGet]
         [Route("BuscarPorId")]
         public IActionResult BuscarPorId(int id)
@@ -39,6 +45,7 @@ namespace ApiAlertaDePrazos.Controllers
         [Route("Autenticar")]
         public IActionResult Autenticar(Usuario usuario)
         {
+            //Autenticação utilizada para logar no website do Sistema de alerta de prazos.
             try
             {
                 Usuario user = null;
@@ -65,6 +72,9 @@ namespace ApiAlertaDePrazos.Controllers
         [Route("Criar")]
         public IActionResult Criar(Usuario usuario)
         {
+            //Cria usuário para o sistema de alerta de prazos.
+            //Envia e-mail de ativação para caixa de e-mail do novo usuário.
+            
             try
             {
                 
@@ -73,18 +83,21 @@ namespace ApiAlertaDePrazos.Controllers
                     if (db.Usuarios.Where(x => x.Email == usuario.Email).ToList().Count > 0)
                         return StatusCode(StatusCodes.Status422UnprocessableEntity, "Este e-mail já está sendo usado.");
 
-                    usuario.PasswordHash = "";
-                    usuario.IsActive = false;
+                    usuario.PasswordHash = "";//A senha será criada após a ativação.
+                    usuario.IsActive = false;//Usuário é criado inativo até chegar a requisição de ativação.
                     db.Usuarios.Add(usuario);
                     db.SaveChanges();
                 }
 
                 //Token
+                //Será enviado no link para ativação enviado para a caixa de e-mail do novo usuário.
+                //Contém informações necessárias para identificar o usuário na hora da ativação.
                 byte[] textoAsBytes = Encoding.ASCII.GetBytes($"{usuario.Id}:{usuario.Nome}:{usuario.Email}");
                 string token = System.Convert.ToBase64String(textoAsBytes);
+                string linkConfirmacao = _configuration["Configuracoes:UrlFrontEnd"];
+                linkConfirmacao += $"/Usuario/Ativar/{token}";
 
-                string linkConfirmacao = $"https://localhost:7241/Usuario/Ativar/{token}";
-
+                //Enviar e-mail.
                 string assunto = "[FACOM - Sistema de Alerta de Prazos] Confirmação de usuário.";
                 string body = @"<html>
                       <body style='font-size: 1.8rem'>
@@ -99,8 +112,8 @@ namespace ApiAlertaDePrazos.Controllers
                                </body>
                       </html>
                      ";
-
                 EmailClient.EnviarEmail(assunto, body, usuario.Email);
+
                 return Ok();
             }
             catch (Exception ex)
@@ -113,6 +126,8 @@ namespace ApiAlertaDePrazos.Controllers
         [Route("Editar")]
         public IActionResult Editar(Usuario usuario)
         {
+            //Recebe usuário com o hash da nova senha
+            //Edita usuário adicionando nova senha e flag de ativação.
             try
             {
 
@@ -144,6 +159,9 @@ namespace ApiAlertaDePrazos.Controllers
         [Route("Ativar")]
         public IActionResult Ativar(string token)
         {
+            //Descifra o token para pegar informações para identificar um usuário
+            //Verifica se é um token válido
+
             try
             {
                 byte[] dadosAsBytes = System.Convert.FromBase64String(token);
