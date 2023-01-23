@@ -1,5 +1,6 @@
 ﻿using AlertaDePrazosLibrary.Entities;
 using ApiUFU.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers
@@ -9,6 +10,7 @@ namespace ApiUFU.Controllers
     public class MatriculaDisciplinaController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IEnumerable<MatriculaDisciplina> Get()
         {

@@ -1,5 +1,6 @@
 ﻿using AlertaDePrazosLibrary.Entities;
 using ApiUFU.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers
@@ -10,6 +11,7 @@ namespace ApiUFU.Controllers
     {
 
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IEnumerable<Curso> Get()
         {

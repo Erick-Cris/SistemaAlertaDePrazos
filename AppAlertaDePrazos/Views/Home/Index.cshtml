@@ -1,10 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Regras";
+    var token = ViewBag.TokenApi;
 }
 
 <div class="text-center">
     <h1 class="display-4" style="padding-bottom: 5%">Regras</h1>
-
+    @*<input hidden type="text" id="apitoken" value=@token.ToString() />*@
 
     <table class="table">
         <thead>
@@ -51,4 +52,6 @@
             }
         </tbody>
     </table>
+    <br />
+    <br />
 </div>

@@ -11,13 +11,13 @@ namespace AlertaDePrazosLibrary.Utils
     {
         public static void EnviarEmail(string assunto, string corpo, string destinatario)
         {
-            MailMessage mail = new MailMessage("erickcristianup@outlook.com", destinatario);
+            MailMessage mail = new MailMessage("erickcristian@outlook.com", destinatario);
             SmtpClient client = new SmtpClient();
 
             client.EnableSsl = true;
             client.Host = "smtp.office365.com";
             client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "senha");
+            client.Credentials = new System.Net.NetworkCredential("erickcristian@outlook.com", "password");
 
             client.Port = 587;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;

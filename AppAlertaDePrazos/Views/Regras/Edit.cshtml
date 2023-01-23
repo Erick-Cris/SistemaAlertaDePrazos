@@ -1,11 +1,13 @@
 ﻿@{
     var regra = ViewBag.Regra;
+    var token = ViewBag.TokenApi;
 }
 <fieldset>
     <h1>Editar Regra </h1>
     <br />
     <div class="container">
         <input hidden type="text" id="Id" name="Id" value=@regra.Id />
+        <input hidden type="text" id="apitoken" value=@token.ToString() />
         <div class="row">
             <div>
                 <label for="Nome" class="form-label">Título:</label>
@@ -63,7 +65,9 @@
 <script type="text/javascript">
     $(document).ready(function(){
 
-
+    $("#buttonClose").click(() => {
+        window.location = "/Home/Index";
+    })
 
     $.ajax({
         type: "GET",

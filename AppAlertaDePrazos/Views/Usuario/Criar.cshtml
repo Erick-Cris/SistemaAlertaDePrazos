@@ -1,5 +1,10 @@
-﻿<fieldset>
+﻿@{
+    ViewData["Title"] = "Criar Usuário";
+    var token = ViewBag.TokenApi;
+}
 
+<fieldset>
+    <input hidden type="text" id="apitoken" value=@token.ToString() />
     <h1>Criar novo usuário</h1>
     <br />
     <div class="container">

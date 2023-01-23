@@ -51,7 +51,7 @@ try
             {
                 List<MatriculaDisciplina> disciplinasAlunoSemestre = matriculaDisciplinas.Where(x => x.AlunoId == aluno.Id && x.SemestreId == semestreAtual.Id).ToList();
                 if (disciplinasAlunoSemestre.Count < 3)
-                    AlertaTrancamentoParcial(aluno);
+                    Alerta("limite mínimo de matrícula em disciplinas", aluno, null, semestres, null, regras, alertas, _clientSistemaAlertaDePrazos);
             }
 
             //Regra verificar Estagios [Sistemas de Informação - Santa Mônica]
@@ -134,6 +134,7 @@ static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, 
             case "estagio não obrigatório possível": AlertaPossivelEstagioNaoObrigatorio(aluno); break;
             case "estagio obrigatório ativo": AlertaEstagioObrigatorio(aluno); break;
             case "estagio não obrigatório ativo": AlertaEstagioNaoObrigatorio(aluno); break;
+            case "limite mínimo de matrícula em disciplinas": AlertaMatricula2Componentes(aluno); break;
         }
 
         Alerta alerta = new Alerta() { MatriculaAluno = aluno.Id, RegraId = regra.Id, DataAlerta = DateTime.Now};
@@ -148,7 +149,7 @@ static void Alerta(string tipoRegra, Aluno aluno, List<Disciplina> disciplinas, 
 //Encapsula Mensagem e disparo de e-mail do alerta.
 //Sua descrição pode ser lida no corpo do e-mail do método.
 #region Alertas
-static void AlertaTrancamentoParcial(Aluno aluno)
+static void AlertaMatricula2Componentes(Aluno aluno)
 {
     Console.WriteLine($"[Trancamento Parcial] {aluno.Id}");
     string assunto = "[UFU] Alerta de matrículas em disciplinas";
@@ -427,13 +428,13 @@ static bool EnviarEmail(string assunto, string corpo, string destinatario)
 {
     try
     {
-        MailMessage mail = new MailMessage("erickcristianup@outlook.com", "erickcristianup@gmail.com");
+        MailMessage mail = new MailMessage("erickcristianup@outlook.com", destinatario);
         SmtpClient client = new SmtpClient();
 
         client.EnableSsl = true;
         client.Host = "smtp.office365.com";
         client.UseDefaultCredentials = false;
-        client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "o]3GY6r/xG]K");
+        client.Credentials = new System.Net.NetworkCredential("erickcristian@outlook.com", "password");
 
         client.Port = 587;
         client.DeliveryMethod = SmtpDeliveryMethod.Network;

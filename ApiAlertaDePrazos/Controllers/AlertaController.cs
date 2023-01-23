@@ -1,5 +1,6 @@
 ﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using ApiAlertaDePrazos.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiAlertaDePrazos.Controllers
@@ -9,6 +10,7 @@ namespace ApiAlertaDePrazos.Controllers
     public class AlertaController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IActionResult Get()
         {
@@ -29,6 +31,7 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Create")]
         public IActionResult Create(Alerta alerta)
         {

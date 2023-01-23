@@ -18,6 +18,8 @@ namespace AppAlertaDePrazos.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.Clear();
+
             return View();
         }
 
@@ -40,7 +42,15 @@ namespace AppAlertaDePrazos.Controllers
                 var response = client.Execute(request);
 
                 if (response.IsSuccessStatusCode)
+                {
+                    
+
+                    HttpContext.Session.SetString("SecurityTokenAPI", (string) JsonConvert.DeserializeObject(response.Content));
+                    //HttpContext.Session.SetInt32("SessionIdade", 54);
+
                     return Ok();
+                }
+                    
                 else
                     throw new Exception("Usuário ou senha inválidos.");
             }catch (Exception e)

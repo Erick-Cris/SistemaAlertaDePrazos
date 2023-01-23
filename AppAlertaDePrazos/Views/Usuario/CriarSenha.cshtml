@@ -1,5 +1,6 @@
 ﻿@{
     var usuario = ViewBag.Usuario;
+    var token = ViewBag.TokenNovoUsuario;
 }
 
 <fieldset>
@@ -8,8 +9,9 @@
     <br />
     <br />
 
+    <input hidden type="text" id="apitoken" value=@token.ToString() />
     <input hidden type="text" id="Id" name="Id" value=@usuario.Id />
-    <input hidden type="text" id="Nome" name="Id" value=@usuario.Nome />
+    <input hidden type="text" id="Nome" name="Id" value=@usuario.Nome.ToString() />
     <input hidden type="text" id="Email" name="Id" value=@usuario.Email />
 
     <div class="container">
@@ -43,6 +45,10 @@
 
         $("#lista-navbar").empty()
         $("#lista-navbar").html(`<li class="nav-item"><a class="nav-link text-dark" href="/">Login</a></li>`)
+
+    $("#buttonClose").click(() => {
+        window.location = "/Login/Index";
+    })
 
     $("#salvar").click(() => {
 

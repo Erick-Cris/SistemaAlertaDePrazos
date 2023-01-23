@@ -18,22 +18,31 @@ namespace AppAlertaDePrazos.Controllers
 
         public IActionResult Index()
         {
-            //Busca regras
+            string apiToken = HttpContext.Session.GetString("SecurityTokenAPI");
+            if(apiToken == null)
+                return RedirectToAction("Index", "Login");
+
+            ////Busca regras
             string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
             var client = new RestClient(urlApiAlertaDePrazos);
             var request = new RestRequest("Regras/get", Method.Get);
-            List<Regra> regras = client.Execute<List<Regra>>(request).Data;
+            request.AddHeader("Authorization", "Bearer " + apiToken);
+            var response = client.Execute(request);
+            List<Regra> regras = JsonConvert.DeserializeObject<List<Regra>>(response.Content);
 
             //Busca Cursos da FACOM
             string urlApiUfu = _configuration["Configuracoes:UrlApiUFU"];
             client = new RestClient(urlApiUfu);
             request = new RestRequest("Curso/Get", Method.Get);
-            var cursos = client.Execute<List<Curso>>(request).Data;
+            request.AddHeader("Authorization", "Bearer " + apiToken);
+            response = client.Execute(request);
+            List<Curso> cursos = JsonConvert.DeserializeObject<List<Curso>>(response.Content);
 
             //Prepara dados para serem dispostos no front end, na tela de regras
             Dictionary<Regra, List<Curso>> regrasCursos = new Dictionary<Regra, List<Curso>>();
             ViewBag.Regras = regras;
-            foreach(var regra in regras)
+            ViewBag.TokenApi = apiToken;
+            foreach (var regra in regras)
             {
                 int[] cursoIdList = JsonConvert.DeserializeObject<int[]>(regra.Parametros);
                 if(cursoIdList.Length > 0)

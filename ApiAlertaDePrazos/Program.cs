@@ -1,3 +1,8 @@
+using AlertaDePrazosLibrary.Utils;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,7 +21,26 @@ builder.Services.AddCors(options =>
                       });
 });
 
-builder.Services.AddSingleton<IConfiguration>(builder.Configuration);//Configuração
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);//Configuração de Parâmetros
+
+//Autenticação da API
+var key = Encoding.ASCII.GetBytes(Security.Secret);
+builder.Services.AddAuthentication(x =>
+{
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(x =>
+{
+    x.RequireHttpsMetadata = false;
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(key),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 var app = builder.Build();
 
@@ -31,6 +55,7 @@ app.UseHttpsRedirection();
 
 app.UseCors("MyAllowSpecificOrigins");
 
+app.UseAuthentication();//Autenticação da API
 app.UseAuthorization();
 
 app.MapControllers();

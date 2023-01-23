@@ -2,6 +2,7 @@
 using AlertaDePrazosLibrary.Enums;
 using ApiUFU.Data;
 using ApiUFU.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RandomNameGeneratorLibrary;
 
@@ -12,6 +13,7 @@ namespace ApiUFU.Controllers
     public class AlunoController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IEnumerable<Aluno> Get()
         {
@@ -25,6 +27,7 @@ namespace ApiUFU.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public IEnumerable<Aluno> Create()
         {
             List<Aluno> alunos = null;
@@ -37,6 +40,7 @@ namespace ApiUFU.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("SeedAlunosV2")]
         public IActionResult PopularAlunosV2()
         {

@@ -30,7 +30,12 @@ namespace AppAlertaDePrazos.Controllers
                 var response = client.Get(request);
                 if (response.IsSuccessStatusCode)
                 {
-                    ViewBag.Usuario = JsonConvert.DeserializeObject<Usuario>(response.Content);
+                    Usuario usuario = JsonConvert.DeserializeObject<Usuario>(response.Content);
+                    string apiToken = TokenService.GenerateToken(usuario);
+                    ViewBag.Usuario = usuario;
+
+                    HttpContext.Session.SetString("SecurityTokenAPINewUser", apiToken);
+                    ViewBag.TokenNovoUsuario = apiToken;
                     return View("CriarSenha");
                 }
                 else
@@ -46,6 +51,12 @@ namespace AppAlertaDePrazos.Controllers
         [Route("Usuario/Criar")]
         public IActionResult Criar()
         {
+            string apiToken = HttpContext.Session.GetString("SecurityTokenAPI");
+            if (apiToken == null)
+                return RedirectToAction("Index", "Login");
+
+
+            ViewBag.TokenApi = apiToken;
             return View();
         }
 
@@ -55,11 +66,16 @@ namespace AppAlertaDePrazos.Controllers
         {
             try
             {
+                string apiToken = HttpContext.Session.GetString("SecurityTokenAPI");
+                if (apiToken == null)
+                    throw new Exception("Se autentique novamente para acessar esse recurso.");
+
                 string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
                 var client = new RestClient($"{urlApiAlertaDePrazos}/Usuario/Criar");
                 var request = new RestRequest($"{urlApiAlertaDePrazos}/Usuario/Criar", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", JsonConvert.SerializeObject(usuario), ParameterType.RequestBody);
+                request.AddHeader("Authorization", "Bearer " + apiToken);
                 var response = client.Execute(request);
 
                 if (response.IsSuccessStatusCode)
@@ -78,6 +94,12 @@ namespace AppAlertaDePrazos.Controllers
         [Route("Usuario/CriarSenha")]
         public IActionResult CriarSenha()
         {
+            string apiToken = HttpContext.Session.GetString("SecurityTokenAPINewUser");
+            if (apiToken == null)
+                return RedirectToAction("Index", "Login");
+
+            ViewBag.TokenNovoUsuario = apiToken;
+
             return View();
         }
 
@@ -87,6 +109,10 @@ namespace AppAlertaDePrazos.Controllers
         {
             try
             {
+                string apiToken = HttpContext.Session.GetString("SecurityTokenAPINewUser");
+                if (apiToken == null)
+                    throw new Exception("Token inválido");
+
                 string hash = HashHandler.HashPassword(usuario.PasswordHash);
 
                 Usuario user = usuario;
@@ -98,6 +124,7 @@ namespace AppAlertaDePrazos.Controllers
                 var request = new RestRequest($"{urlApiAlertaDePrazos}/Usuario/Editar", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", JsonConvert.SerializeObject(usuario), ParameterType.RequestBody);
+                request.AddHeader("Authorization", "Bearer " + apiToken);
                 var response = client.Execute(request);
 
                 if (response.IsSuccessStatusCode)

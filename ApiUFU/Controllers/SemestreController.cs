@@ -1,5 +1,6 @@
 ﻿using AlertaDePrazosLibrary.Entities;
 using ApiUFU.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers
@@ -9,6 +10,7 @@ namespace ApiUFU.Controllers
     public class SemestreController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IEnumerable<Semestre> Get()
         {
@@ -22,6 +24,7 @@ namespace ApiUFU.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetSemestreAtual")]
         public IActionResult GetSemestreAtual()
         {

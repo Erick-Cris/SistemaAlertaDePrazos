@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -15,6 +17,17 @@ builder.Services.AddCors(options =>
 });
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);//Configuração
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
@@ -40,6 +53,8 @@ app.UseCors(builder =>
 }); //CORS
 
 app.UseAuthorization();
+
+app.UseSession();//Controle de Usuário - Session
 
 app.MapControllerRoute(
     name: "default",

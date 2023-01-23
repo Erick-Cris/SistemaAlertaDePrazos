@@ -1,6 +1,7 @@
 ﻿using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using AlertaDePrazosLibrary.Utils;
 using ApiAlertaDePrazos.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
@@ -20,6 +21,7 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("BuscarPorId")]
         public IActionResult BuscarPorId(int id)
         {
@@ -42,6 +44,7 @@ namespace ApiAlertaDePrazos.Controllers
 
 
         [HttpPost]
+        [AllowAnonymous]
         [Route("Autenticar")]
         public IActionResult Autenticar(Usuario usuario)
         {
@@ -57,7 +60,8 @@ namespace ApiAlertaDePrazos.Controllers
                 if(user != null)
                 {
                     user.PasswordHash = String.Empty;
-                    return Ok(user);
+                    string token = TokenService.GenerateToken(user);
+                    return Ok(token);
                 }
                 else
                     return StatusCode(StatusCodes.Status401Unauthorized, "Usuário ou senha inválidos.");
@@ -69,6 +73,7 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Criar")]
         public IActionResult Criar(Usuario usuario)
         {
@@ -123,6 +128,7 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("Editar")]
         public IActionResult Editar(Usuario usuario)
         {
@@ -156,6 +162,7 @@ namespace ApiAlertaDePrazos.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [Route("Ativar")]
         public IActionResult Ativar(string token)
         {

@@ -1,6 +1,7 @@
 ﻿using AlertaDePrazosLibrary.Entities;
 using AlertaDePrazosLibrary.Enums;
 using ApiUFU.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiUFU.Controllers
@@ -10,6 +11,7 @@ namespace ApiUFU.Controllers
     public class EstagioController : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         [Route("Get")]
         public IActionResult Get()
         {
@@ -31,6 +33,7 @@ namespace ApiUFU.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         [Route("GetEstagiosEmAberto")]
         public IActionResult GetEstagiosEmAberto()
         {
