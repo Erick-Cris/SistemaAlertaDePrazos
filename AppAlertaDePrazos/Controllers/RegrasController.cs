@@ -8,9 +8,16 @@ namespace AppAlertaDePrazos.Controllers
 {
     public class RegrasController : Controller
     {
+        private IConfiguration _configuration;
+        public RegrasController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
+
         public IActionResult Index()
         {
-            var client = new RestClient("https://localhost:7049");
+            string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+            var client = new RestClient(urlApiAlertaDePrazos);
             var request = new RestRequest("Regras/get", Method.Get);
             List<Regra> regras = client.Execute<List<Regra>>(request).Data;
 
@@ -23,7 +30,8 @@ namespace AppAlertaDePrazos.Controllers
         {
             try
             {
-                var url = $"https://localhost:7049/Regras/GetById/?regraid={regraid}";
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var url = $"{urlApiAlertaDePrazos}/Regras/GetById/?regraid={regraid}";
                 var client = new RestClient(url);
                 var request = new RestRequest();
                 var response = client.Get(request);
@@ -57,8 +65,9 @@ namespace AppAlertaDePrazos.Controllers
 
                 //ViewBag.Regra = regra;
 
-                var client = new RestClient("https://localhost:7049/Regras/Edit");
-                var request = new RestRequest("https://localhost:7049/Regras/Edit", Method.Post);
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var client = new RestClient($"{urlApiAlertaDePrazos}/Regras/Edit");
+                var request = new RestRequest($"{urlApiAlertaDePrazos}/Regras/Edit", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", JsonConvert.SerializeObject(regra), ParameterType.RequestBody);
                 var response = client.Execute(request);

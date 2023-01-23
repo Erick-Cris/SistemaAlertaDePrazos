@@ -101,7 +101,7 @@ namespace ApiAlertaDePrazos.Controllers
                 string assunto = "[FACOM - Sistema de Alerta de Prazos] Confirmação de usuário.";
                 string body = @"<html>
                       <body style='font-size: 1.8rem'>
-                      <p style='font-size: 2rem'>Olá " + usuario.Nome + @".</p>
+                      <p style='font-size: 2rem'>Olá " + usuario.Nome.ToUpper() + @".</p>
                       <p>Para confirmar o cadastro do seu usuário no sistema de Alerta de Prazos da FACOM, clique no linik abaixo.</p>
                       <p><a href='" + linkConfirmacao + @"'>Clique aqui</a></p>
                        <br/>

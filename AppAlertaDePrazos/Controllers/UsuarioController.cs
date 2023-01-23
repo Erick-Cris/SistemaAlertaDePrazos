@@ -10,6 +10,12 @@ namespace AppAlertaDePrazos.Controllers
 {
     public class UsuarioController : Controller
     {
+        private IConfiguration _configuration;
+        public UsuarioController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
+
         [Route("Usuario/Ativar/{token}")]
         public IActionResult Ativar(string token)
         {
@@ -17,7 +23,8 @@ namespace AppAlertaDePrazos.Controllers
             //Entrada: Usuário clica no link de ativação enviado para sua caixa de e-mail
             try
             {
-                var url = $"https://localhost:7049/Usuario/Ativar/?token={token}";
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var url = $"{urlApiAlertaDePrazos}/Usuario/Ativar/?token={token}";
                 var client = new RestClient(url);
                 var request = new RestRequest();
                 var response = client.Get(request);
@@ -48,8 +55,9 @@ namespace AppAlertaDePrazos.Controllers
         {
             try
             {
-                var client = new RestClient("https://localhost:7049/Usuario/Criar");
-                var request = new RestRequest("https://localhost:7049/Usuario/Criar", Method.Post);
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var client = new RestClient($"{urlApiAlertaDePrazos}/Usuario/Criar");
+                var request = new RestRequest($"{urlApiAlertaDePrazos}/Usuario/Criar", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", JsonConvert.SerializeObject(usuario), ParameterType.RequestBody);
                 var response = client.Execute(request);
@@ -85,9 +93,9 @@ namespace AppAlertaDePrazos.Controllers
                 user.PasswordHash = hash;
                 user.IsActive = true;
 
-
-                var client = new RestClient("https://localhost:7049/Usuario/Editar");
-                var request = new RestRequest("https://localhost:7049/Usuario/Editar", Method.Post);
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var client = new RestClient($"{urlApiAlertaDePrazos}/Usuario/Editar");
+                var request = new RestRequest($"{urlApiAlertaDePrazos}/Usuario/Editar", Method.Post);
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("application/json", JsonConvert.SerializeObject(usuario), ParameterType.RequestBody);
                 var response = client.Execute(request);

@@ -3,8 +3,7 @@ using AlertaDePrazosLibrary.Entities.AlertaDePrazos;
 using AlertaDePrazosLibrary.Enums;
 using Newtonsoft.Json;
 using RoboAlertaDePrazos;
-
-
+using System.Net.Mail;
 
 try
 {
@@ -428,22 +427,22 @@ static bool EnviarEmail(string assunto, string corpo, string destinatario)
 {
     try
     {
-        //MailMessage mail = new MailMessage("erickcristianup@outlook.com", "erickcristianup@gmail.com");
-        //SmtpClient client = new SmtpClient();
+        MailMessage mail = new MailMessage("erickcristianup@outlook.com", "erickcristianup@gmail.com");
+        SmtpClient client = new SmtpClient();
 
-        //client.EnableSsl = true;
-        //client.Host = "smtp.office365.com";
-        //client.UseDefaultCredentials = false;
-        //client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "o]3GY6r/xG]K");
+        client.EnableSsl = true;
+        client.Host = "smtp.office365.com";
+        client.UseDefaultCredentials = false;
+        client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "o]3GY6r/xG]K");
 
-        //client.Port = 587;
-        //client.DeliveryMethod = SmtpDeliveryMethod.Network;
+        client.Port = 587;
+        client.DeliveryMethod = SmtpDeliveryMethod.Network;
 
-        //mail.Subject = assunto;
-        //mail.Body = corpo;
-        //mail.IsBodyHtml = true;
+        mail.Subject = assunto;
+        mail.Body = corpo;
+        mail.IsBodyHtml = true;
 
-        //client.Send(mail);
+        client.Send(mail);
 
         return true;
     }

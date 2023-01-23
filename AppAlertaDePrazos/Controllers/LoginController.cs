@@ -10,6 +10,12 @@ namespace AppAlertaDePrazos.Controllers
 {
     public class LoginController : Controller
     {
+        private IConfiguration _configuration;
+        public LoginController(IConfiguration Configuration)
+        {
+            _configuration = Configuration;
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -25,7 +31,8 @@ namespace AppAlertaDePrazos.Controllers
                 Usuario user = new Usuario() { Id = 0, Nome = "", Email = email, IsActive = false, PasswordHash = "" };
                 user.PasswordHash = hash;
 
-                var url = $"https://localhost:7049/Usuario/Autenticar";
+                string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+                var url = $"{urlApiAlertaDePrazos}/Usuario/Autenticar";
                 var client = new RestClient(url);
                 var request = new RestRequest(url, Method.Post);
                 request.AddHeader("Content-Type", "application/json");

@@ -17,7 +17,7 @@ namespace AlertaDePrazosLibrary.Utils
             client.EnableSsl = true;
             client.Host = "smtp.office365.com";
             client.UseDefaultCredentials = false;
-            client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "o]3GY6r/xG]K");
+            client.Credentials = new System.Net.NetworkCredential("erickcristianup@outlook.com", "senha");
 
             client.Port = 587;
             client.DeliveryMethod = SmtpDeliveryMethod.Network;

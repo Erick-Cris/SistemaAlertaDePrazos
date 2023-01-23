@@ -10,22 +10,23 @@ namespace AppAlertaDePrazos.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private IConfiguration _configuration;
+        public HomeController(IConfiguration Configuration)
         {
-            _logger = logger;
+            _configuration = Configuration;
         }
 
         public IActionResult Index()
         {
             //Busca regras
-            var client = new RestClient("https://localhost:7049");
+            string urlApiAlertaDePrazos = _configuration["Configuracoes:UrlApiAlertaDePrazos"];
+            var client = new RestClient(urlApiAlertaDePrazos);
             var request = new RestRequest("Regras/get", Method.Get);
             List<Regra> regras = client.Execute<List<Regra>>(request).Data;
 
             //Busca Cursos da FACOM
-            client = new RestClient("https://localhost:7149");
+            string urlApiUfu = _configuration["Configuracoes:UrlApiUFU"];
+            client = new RestClient(urlApiUfu);
             request = new RestRequest("Curso/Get", Method.Get);
             var cursos = client.Execute<List<Curso>>(request).Data;
 
