@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RoboAlertaDePrazos", "RoboA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AlertaDePrazosLibrary", "AlertaDePrazosLibrary\AlertaDePrazosLibrary.csproj", "{CEBF95B5-EA90-46A7-AEA3-F94808977B9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppAlertaDePrazos", "AppAlertaDePrazos\AppAlertaDePrazos.csproj", "{2555B949-1F1D-4ADB-B548-219EA68EC102}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppAlertaDePrazos", "AppAlertaDePrazos\AppAlertaDePrazos.csproj", "{2555B949-1F1D-4ADB-B548-219EA68EC102}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
