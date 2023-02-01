@@ -169,7 +169,7 @@ static void AlertaMatricula2Componentes(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Trancamento Parcial][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaDilacaoDePrazo(Aluno aluno)
@@ -197,7 +197,7 @@ static void AlertaDilacaoDePrazo(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Dilação de Prazo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoParcialAtiva(Aluno aluno, List<Disciplina> disciplinas)
@@ -230,7 +230,7 @@ static void AlertaTrancamentoParcialAtiva(Aluno aluno, List<Disciplina> discipli
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Trancamento Parcial Ativa][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoParcialPassivo(Aluno aluno)
@@ -253,7 +253,7 @@ static void AlertaTrancamentoParcialPassivo(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Trancamento Parical Passivo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaEstagioObrigatorio(Aluno aluno)
@@ -276,7 +276,7 @@ static void AlertaEstagioObrigatorio(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Estagio Obrigatorio][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaEstagioNaoObrigatorio(Aluno aluno)
@@ -299,7 +299,7 @@ static void AlertaEstagioNaoObrigatorio(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Estágio Não Obrigatório][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaPossivelEstagioObrigatorio(Aluno aluno)
@@ -318,7 +318,7 @@ static void AlertaPossivelEstagioObrigatorio(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Estágio Obrigatório Disponível][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaPossivelEstagioNaoObrigatorio(Aluno aluno)
@@ -337,7 +337,7 @@ static void AlertaPossivelEstagioNaoObrigatorio(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Estágio Não Obrigatório Disponível][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoGeralAtivo(Aluno aluno, List<Semestre> semestres)
@@ -359,7 +359,7 @@ static void AlertaTrancamentoGeralAtivo(Aluno aluno, List<Semestre> semestres)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Trancamento Geral Ativo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 static void AlertaTrancamentoGeralPassivo(Aluno aluno)
@@ -386,7 +386,7 @@ static void AlertaTrancamentoGeralPassivo(Aluno aluno)
                                </body>
                       </html>
                      ";
-    if (!EnviarEmail(assunto, body, ""))
+    if (!EnviarEmail(assunto, body, aluno.Email))
         throw new Exception($"[ERRO][Trancamento Geral Passivo][Aluno: {aluno.Id}] Falha ao enviar e-mail.");
 }
 #endregion
@@ -428,7 +428,7 @@ static bool EnviarEmail(string assunto, string corpo, string destinatario)
 {
     try
     {
-        MailMessage mail = new MailMessage("erickcristianup@outlook.com", destinatario);
+        MailMessage mail = new MailMessage("erickcristian@outlook.com", destinatario);
         SmtpClient client = new SmtpClient();
 
         client.EnableSsl = true;
